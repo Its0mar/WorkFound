@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "B3tY6UdOdoq2ZmEIBiGG+wR1BF5eu1ShyIu+j17JM2tmw2hlwnrvbWFwBmcYbQ2ZFs9WL4w3iZvSHRN0BywUoQ==",
+  "success": true,
+  "projectFilePath": "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Application/WorkFound.Application.csproj",
+  "expectedPackageFiles": [
+    "/home/its0mar/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.15/microsoft.aspnetcore.app.ref.8.0.15.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,238 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.API/WorkFound.API.csproj": {}
+  },
+  "projects": {
+    "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.API/WorkFound.API.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.API/WorkFound.API.csproj",
+        "projectName": "WorkFound.API",
+        "projectPath": "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.API/WorkFound.API.csproj",
+        "packagesPath": "/home/its0mar/.nuget/packages/",
+        "outputPath": "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.API/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/its0mar/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Domain/WorkFound.Domain.csproj": {
+                "projectPath": "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Domain/WorkFound.Domain.csproj"
+              },
+              "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Infrastructure/WorkFound.Infrastructure.csproj": {
+                "projectPath": "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Infrastructure/WorkFound.Infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "(, )"
+            },
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "(, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "(, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "(, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.15, 8.0.15]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.115/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Domain/WorkFound.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Domain/WorkFound.Domain.csproj",
+        "projectName": "WorkFound.Domain",
+        "projectPath": "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Domain/WorkFound.Domain.csproj",
+        "packagesPath": "/home/its0mar/.nuget/packages/",
+        "outputPath": "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Domain/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/its0mar/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "(, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "(, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.15, 8.0.15]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.115/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Infrastructure/WorkFound.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Infrastructure/WorkFound.Infrastructure.csproj",
+        "projectName": "WorkFound.Infrastructure",
+        "projectPath": "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Infrastructure/WorkFound.Infrastructure.csproj",
+        "packagesPath": "/home/its0mar/.nuget/packages/",
+        "outputPath": "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Infrastructure/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/its0mar/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Domain/WorkFound.Domain.csproj": {
+                "projectPath": "/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Domain/WorkFound.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "(, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "(, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.15, 8.0.15]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.115/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

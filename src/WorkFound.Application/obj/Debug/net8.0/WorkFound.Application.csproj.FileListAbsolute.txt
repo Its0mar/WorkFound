@@ -1,0 +1,11 @@
+/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Application/bin/Debug/net8.0/WorkFound.Application.deps.json
+/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Application/bin/Debug/net8.0/WorkFound.Application.dll
+/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Application/bin/Debug/net8.0/WorkFound.Application.pdb
+/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Application/obj/Debug/net8.0/WorkFound.Application.GeneratedMSBuildEditorConfig.editorconfig
+/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Application/obj/Debug/net8.0/WorkFound.Application.AssemblyInfoInputs.cache
+/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Application/obj/Debug/net8.0/WorkFound.Application.AssemblyInfo.cs
+/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Application/obj/Debug/net8.0/WorkFound.Application.csproj.CoreCompileInputs.cache
+/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Application/obj/Debug/net8.0/WorkFound.Application.dll
+/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Application/obj/Debug/net8.0/refint/WorkFound.Application.dll
+/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Application/obj/Debug/net8.0/WorkFound.Application.pdb
+/home/its0mar/RiderProjects/WorkFound/src/WorkFound.Application/obj/Debug/net8.0/ref/WorkFound.Application.dll
