@@ -19,21 +19,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        
+
         builder.Entity<AppUser>()
             .HasOne(x => x.UserProfile)
             .WithOne(x => x.AppUser)
-            .HasForeignKey<UserProfile>(x => x.AppUserId);
+            .HasForeignKey<UserProfile>(x => x.AppUserId)
+            .OnDelete(DeleteBehavior.Restrict);
         
         builder.Entity<AppUser>()
             .HasOne(x => x.CompanyProfile)
             .WithOne(x => x.AppUser)
-            .HasForeignKey<CompanyProfile>(x => x.AppUserId);
+            .HasForeignKey<CompanyProfile>(x => x.AppUserId)
+            .OnDelete(DeleteBehavior.Restrict);
         
         builder.Entity<AppUser>()
             .HasOne(x => x.AdminProfile)
             .WithOne(x => x.AppUser)
-            .HasForeignKey<AdminProfile>(x => x.AppUserId);
+            .HasForeignKey<AdminProfile>(x => x.AppUserId)
+            .OnDelete(DeleteBehavior.Restrict);
         
         builder.Entity<UserProfile>(entity =>
         {
@@ -50,9 +53,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
                 .IsRequired();
 
             entity.Property(p => p.Bio)
-                .HasMaxLength(500)
-                .IsRequired();
-
+                .HasMaxLength(500);
+            
             entity.Property(p => p.ProfilePictureUrl)
                 .HasMaxLength(255);
         });

@@ -26,7 +26,7 @@ public class AuthService : IAuthService
     
     public async Task<AuthResult> CompanyRegisterAsync(CompanyRegisterDto dto)
     {
-        var appUser = dto.ToAppUser();
+        var appUser = dto.ToAppUser(AccountType.Company);
         var result = await InitializeUser(appUser, dto.Password, "Company");
         
         if (!result.Succeeded)
@@ -41,7 +41,7 @@ public class AuthService : IAuthService
 
     public async Task<AuthResult> UserRegisterAsync(UserRegisterDto dto)
     {
-        var appUser = dto.ToAppUser();
+        var appUser = dto.ToAppUser(AccountType.User);
         var result = await InitializeUser(appUser, dto.Password, "User");
         
         if (!result.Succeeded)
@@ -54,6 +54,22 @@ public class AuthService : IAuthService
         return result;
         
         ;
+    }
+    
+    public async Task<AuthResult> LoginAsync(LoginDto dto)
+    {
+        var user = await _userManager.FindByEmailAsync(dto.EmailOrUsername) ??
+                   await _userManager.FindByNameAsync(dto.EmailOrUsername);
+        
+        if (user == null)
+            return AuthResult.Fail("Invalid email or username");
+
+        var result = await _userManager.CheckPasswordAsync(user, dto.Password);
+        if (!result)
+            return AuthResult.Fail("Invalid password");
+
+        var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "User";
+        return AuthResult.Success(user.Id, _jwtTokenGenerator.GenerateToken(user), role);
     }
 
     #region Utility Methods

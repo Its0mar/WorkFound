@@ -7,7 +7,7 @@ public class UserProfile
 {
     public Guid Id { get; set; }
     public Guid AppUserId { get; set; }
-    public required AppUser AppUser { get; set; }
+    public AppUser? AppUser { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public required string Location { get; set; }

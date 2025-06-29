@@ -301,7 +301,6 @@ namespace WorkFound.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Bio")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
@@ -388,7 +387,7 @@ namespace WorkFound.Infrastructure.Migrations
                     b.HasOne("WorkFound.Domain.Entities.Auth.AppUser", "AppUser")
                         .WithOne("AdminProfile")
                         .HasForeignKey("WorkFound.Domain.Entities.Profile.Admin.AdminProfile", "AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("AppUser");
@@ -399,7 +398,7 @@ namespace WorkFound.Infrastructure.Migrations
                     b.HasOne("WorkFound.Domain.Entities.Auth.AppUser", "AppUser")
                         .WithOne("CompanyProfile")
                         .HasForeignKey("WorkFound.Domain.Entities.Profile.Company.CompanyProfile", "AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("AppUser");
@@ -410,7 +409,7 @@ namespace WorkFound.Infrastructure.Migrations
                     b.HasOne("WorkFound.Domain.Entities.Auth.AppUser", "AppUser")
                         .WithOne("UserProfile")
                         .HasForeignKey("WorkFound.Domain.Entities.Profile.User.UserProfile", "AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("AppUser");

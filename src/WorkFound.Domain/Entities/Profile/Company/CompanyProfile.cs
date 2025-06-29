@@ -8,7 +8,7 @@ public class CompanyProfile
 {
     public Guid Id { get; set; }
     public Guid AppUserId { get; set; }
-    public required AppUser AppUser { get; set; }
+    public AppUser? AppUser { get; set; }
     
     public required string Name { get; set; }
     public required string Description { get; set; }

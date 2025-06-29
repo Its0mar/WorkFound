@@ -7,7 +7,7 @@ namespace WorkFound.Application.Auth.Extensions;
 
 public static class Mapping
 {
-    public static AppUser ToAppUser(this RegisterDto dto)
+    public static AppUser ToAppUser(this RegisterDto dto, AccountType accTyoe)
     {
         return new AppUser()
         {
@@ -15,7 +15,7 @@ public static class Mapping
             Email = dto.Email,
             PhoneNumber = dto.Phone,
             CreatedAt = DateTime.Now,
-            AccountType = AccountType.Company,
+            AccountType = accTyoe,
         };
     }
 
@@ -23,7 +23,7 @@ public static class Mapping
     {
         return new CompanyProfile()
         {
-            AppUser = user,
+            // AppUser = user,
             AppUserId = user.Id,
             Name = dto.CompanyName,
             Description = dto.Description,
@@ -38,7 +38,7 @@ public static class Mapping
     {
         return new UserProfile()
         {
-            AppUser = user,
+            // AppUser = user,
             AppUserId = user.Id,
             FirstName = dto.FirstName,
             LastName = dto.LastName,
