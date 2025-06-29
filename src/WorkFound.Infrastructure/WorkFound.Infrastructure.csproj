@@ -8,12 +8,14 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\WorkFound.Application\WorkFound.Application.csproj" />
         <ProjectReference Include="..\WorkFound.Domain\WorkFound.Domain.csproj" />
     </ItemGroup>
 

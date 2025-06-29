@@ -1,19 +1,23 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
+      <UserSecretsId>219dc6ce-0534-4c90-a241-de225557375e</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
         <PackageReference Include="Swashbuckle.AspNetCore" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\WorkFound.Application\WorkFound.Application.csproj" />
         <ProjectReference Include="..\WorkFound.Domain\WorkFound.Domain.csproj" />
         <ProjectReference Include="..\WorkFound.Infrastructure\WorkFound.Infrastructure.csproj" />
     </ItemGroup>
