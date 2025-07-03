@@ -1,26 +1,24 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using WorkFound.Application.Auth;
 using WorkFound.Application.Auth.Dtos;
+using WorkFound.Application.Auth.Extensions;
 using WorkFound.Application.Auth.Services;
-using WorkFound.Application.Auth.TokenGenerator;
-using WorkFound.Domain.Entities.Auth;
-using WorkFound.Domain.Entities.Profile.Company;
-
+using WorkFound.Application.Common.Interface;
+using WorkFound.Application.Common.Result;
 namespace WorkFound.API.Controllers;
 
 [ApiController]
-[Route("[controller]/[action]")]
+[Route("api/[controller]/[action]")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
-
-    public AuthController(IAuthService authService)
+    private readonly IEmailConfirmationService _emailConfirmationService;
+    private readonly ICurrentUserService _currentUserService;
+    public AuthController(IAuthService authService, IEmailConfirmationService emailConfirmationService, ICurrentUserService currentUserService)
     {
         _authService = authService;
+        _emailConfirmationService = emailConfirmationService;
+        _currentUserService = currentUserService;
     }
     
     [Authorize]
@@ -33,10 +31,6 @@ public class AuthController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CompanyRegister([FromForm]CompanyRegisterDto dto)
     {
-        // check if company is in physical location and location is provided
-        if (dto.LocationType == CompanyLocationType.Physical && string.IsNullOrEmpty(dto.Location))
-            return BadRequest("Location is required for physical location");
-        
         var result = await _authService.CompanyRegisterAsync(dto);
         if (!result.Succeeded)
             return BadRequest(result.Errors);
@@ -45,24 +39,94 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> UserRegister([FromForm]UserRegisterDto dto)
+    public async Task<ActionResult<AuthResult>> UserRegister([FromForm]UserRegisterDto dto)
     {
         var result = await _authService.UserRegisterAsync(dto);
         if (!result.Succeeded)
             return BadRequest(result.Errors);
         
-        return Ok(result);
+        return result;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Login([FromForm] LoginDto dto)
+    public async Task<ActionResult<AuthResult>> Login([FromForm] LoginDto dto)
     {
         var result = await _authService.LoginAsync(dto);
         if (!result.Succeeded)
             return BadRequest(result.Errors);
         
+        return result;
+    }
+
+    [HttpGet]
+    public async Task<ActionResult> RequestEmailConfirmation()
+    {
+        var user = await _currentUserService.GetCurrentUserAsync();
+        if (user is null)
+            return Unauthorized("User not found!");
+
+        await _emailConfirmationService.SendConfirmationEmailAsync(user, $"{Request.Scheme}://{Request.Host}", nameof(ConfirmEmail));
+        return Ok("Confirmation email sent successfully!");
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<AuthResult>> ConfirmEmail([FromQuery]string userId ,string token)
+    {
+        var result = await _authService.ConfirmEmailAsync(token, Guid.Parse(userId));
+        
+        if (!result.Succeeded)
+            return BadRequest(result.Errors);
+
         return Ok(result);
     }
     
+    [HttpPatch]
+    public async Task<ActionResult<AuthResult>> ChangePassword([FromForm] ChangePasswordDto dto)
+    {
+        var result = await _authService.ChangePasswordAsync(dto, User.GetUserId());
+        if (!result.Succeeded)
+            return BadRequest(result.Errors);
+        
+        return result;
+    }
+    [HttpGet]
+    public async Task<IActionResult> RefreshToken(string refreshToken)
+    {
+        
+        //var refreshToken = Request.Cookies["refreshToken"];
+        var result = await _authService.RefreshTokenAsync(refreshToken);
+
+        if (result.RefreshToken is null || result.RefreshTokenExpireOn is null)
+            return BadRequest("Invalid refresh token!");
+        
+        SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpireOn.Value);
+
+        return Ok(result);
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> RevokeToken(string token)
+    {
+        var result = await _authService.RevokeTokenAsync(token);
+
+        if(!result)
+            return BadRequest("Token is invalid!");
+
+        return Ok();
+    }
+    
+    private void SetRefreshTokenInCookie(string refreshToken, DateTime expires)
+    {
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = expires.ToLocalTime(),
+            Secure = true,
+            IsEssential = true,
+            SameSite = SameSiteMode.None
+        };
+
+        Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+    }
 }
 

@@ -11,6 +11,9 @@ using WorkFound.Application.Common.Interface;
 using WorkFound.Domain.Entities.Auth;
 using WorkFound.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
+using WorkFound.Application.Common.Services;
+using WorkFound.Application.Common.Settings;
+using WorkFound.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -67,8 +70,8 @@ builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(opt =>
 }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
 // builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).AddUserSecrets<Program>();
-builder.Services.Configure<JwtSettings>(
-    builder.Configuration.GetSection("JwtSettings"));
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
 
 builder.Services.AddAuthentication(options =>
@@ -129,6 +132,9 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAppDbContext, AppDbContext>();
+builder.Services.AddScoped<IMailService, MailKitMailService>();
+builder.Services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 
 var app = builder.Build();

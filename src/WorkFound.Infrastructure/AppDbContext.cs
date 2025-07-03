@@ -37,7 +37,20 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .WithOne(x => x.AppUser)
             .HasForeignKey<AdminProfile>(x => x.AppUserId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // Ensure unique constraints for phone number
+        builder.Entity<AppUser>()
+            .HasIndex(u => u.PhoneNumber)
+            .IsUnique();
         
+        //to remove the length warning
+        // builder.Entity<AppUser>(entiy =>
+        // {
+        //     entiy.Property(p => p.RefreshToken)
+        //         .HasMaxLength(50);
+        // });
+        
+        // to remove the length warning
         builder.Entity<UserProfile>(entity =>
         {
             entity.Property(p => p.FirstName)

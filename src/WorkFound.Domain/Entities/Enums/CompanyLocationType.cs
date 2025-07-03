@@ -1,4 +1,4 @@
-namespace WorkFound.Domain.Entities.Profile.Company;
+namespace WorkFound.Domain.Entities.Enums;
 
 public enum CompanyLocationType
 {

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WorkFound.Application.Auth.Dtos;
 
-public class UserRegisterDto : RegisterDto
+public record UserRegisterDto : RegisterDto
 {
     [Required(ErrorMessage = "First Name is required")]
     [MaxLength(15, ErrorMessage = "First Name cannot exceed 15 characters")]

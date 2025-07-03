@@ -8,4 +8,10 @@ public interface IAuthService
     Task<AuthResult> CompanyRegisterAsync(CompanyRegisterDto dto);
     Task<AuthResult> UserRegisterAsync(UserRegisterDto dto);
     public Task<AuthResult> LoginAsync(LoginDto dto);
+    public Task<AuthResult> ChangePasswordAsync(ChangePasswordDto dto, Guid userId);
+    public Task<AuthResult> GetTokenAsync(Guid userId);
+    public Task<AuthResult> RefreshTokenAsync(string token);
+    public Task<bool> RevokeTokenAsync(string token);
+    public Task<AuthResult> ConfirmEmailAsync(string token, Guid userId);
+
 }

@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using WorkFound.Application.Common.Validation;
+using WorkFound.Domain.Entities.Enums;
 using WorkFound.Domain.Entities.Profile.Company;
 
 namespace WorkFound.Application.Auth.Dtos;
 
-public class CompanyRegisterDto : RegisterDto
+public record CompanyRegisterDto : RegisterDto
 {
     [Required(ErrorMessage = "Company Name is required")]
     [MaxLength(50, ErrorMessage = "Company Name cannot exceed 50 characters")]
@@ -18,5 +20,6 @@ public class CompanyRegisterDto : RegisterDto
     [DataType(DataType.ImageUrl)]
     public string? LogoUrl { get; init; }
     public required CompanyLocationType LocationType { get; init; }
+    [CompanyLocationRequired]
     public string? Location { get; init; }
 }

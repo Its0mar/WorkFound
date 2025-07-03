@@ -9,9 +9,11 @@ public class AppUser : IdentityUser<Guid>
 {
     public DateTime CreatedAt { get; set; }
     public AccountType AccountType { get; set; }
+    //public List<RefreshToken>? RefreshTokens { get; set; } 
     public UserProfile? UserProfile { get; set; }
     public CompanyProfile? CompanyProfile { get; set; }
     public AdminProfile? AdminProfile { get; set; }
+
     
 }
 

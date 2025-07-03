@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using WorkFound.Domain.Entities.Auth;
+using WorkFound.Domain.Entities.Enums;
 using WorkFound.Domain.Entities.Profile.Company;
 
 namespace WorkFound.Domain.Entities.Profile.Company;

@@ -231,6 +231,9 @@ namespace WorkFound.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
+
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
@@ -251,7 +254,7 @@ namespace WorkFound.Infrastructure.Migrations
                     b.HasIndex("AppUserId")
                         .IsUnique();
 
-                    b.ToTable("AdminProfile");
+                    b.ToTable("AdminProfile", (string)null);
                 });
 
             modelBuilder.Entity("WorkFound.Domain.Entities.Profile.Company.CompanyProfile", b =>
@@ -288,7 +291,7 @@ namespace WorkFound.Infrastructure.Migrations
                     b.HasIndex("AppUserId")
                         .IsUnique();
 
-                    b.ToTable("CompanyProfiles");
+                    b.ToTable("CompanyProfiles", (string)null);
                 });
 
             modelBuilder.Entity("WorkFound.Domain.Entities.Profile.User.UserProfile", b =>
@@ -328,7 +331,7 @@ namespace WorkFound.Infrastructure.Migrations
                     b.HasIndex("AppUserId")
                         .IsUnique();
 
-                    b.ToTable("UserProfiles");
+                    b.ToTable("UserProfiles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
