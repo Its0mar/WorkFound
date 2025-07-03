@@ -1,3 +1,4 @@
+using System.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkFound.Application.Auth.Dtos;
@@ -7,6 +8,7 @@ using WorkFound.Application.Common.Interface;
 using WorkFound.Application.Common.Result;
 namespace WorkFound.API.Controllers;
 
+[AllowAnonymous]
 [ApiController]
 [Route("api/[controller]/[action]")]
 public class AuthController : ControllerBase
@@ -80,6 +82,7 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
     
+    [Authorize]
     [HttpPatch]
     public async Task<ActionResult<AuthResult>> ChangePassword([FromForm] ChangePasswordDto dto)
     {
@@ -89,6 +92,29 @@ public class AuthController : ControllerBase
         
         return result;
     }
+
+    [HttpPost]
+    public async Task<ActionResult> ResetPasswordRequest([FromForm] ResetPasswordRequestDto dto)
+    {
+
+        var resetLink = $"{Request.Scheme}://{Request.Host}/api/auth/{nameof(ResetPassword)}";
+        await _authService.SendResetPasswordEmailAsync(dto.Email, resetLink);
+        
+        return Ok("If an account with this email exists, a reset password link has been sent to it.");
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<AuthResult>> ResetPassword([FromForm] ResetPasswordDto dto, [FromQuery] string token,
+        string email)
+    {
+        var result = await _authService.ResetPasswordAsync(dto, email, token);
+        
+        if (!result.Succeeded)
+            return BadRequest(result.Errors);
+        
+        return result;
+    }
+
     [HttpGet]
     public async Task<IActionResult> RefreshToken(string refreshToken)
     {
@@ -129,4 +155,5 @@ public class AuthController : ControllerBase
         Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
     }
 }
+
 

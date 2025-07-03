@@ -13,5 +13,7 @@ public interface IAuthService
     public Task<AuthResult> RefreshTokenAsync(string token);
     public Task<bool> RevokeTokenAsync(string token);
     public Task<AuthResult> ConfirmEmailAsync(string token, Guid userId);
+    public Task SendResetPasswordEmailAsync(string email, string resetLink);
+    public Task<AuthResult> ResetPasswordAsync(ResetPasswordDto dto, string email, string token);
 
 }

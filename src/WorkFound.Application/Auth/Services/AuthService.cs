@@ -20,14 +20,16 @@ public class AuthService : IAuthService
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly IAppDbContext _context;
     private readonly JwtSettings _jwtSettings;
+    private readonly IMailService _mailService;
 
     public AuthService(UserManager<AppUser> userManager, IJwtTokenGenerator jwtTokenGenerator,
-        IAppDbContext context, IOptions<JwtSettings> jwtSettings)
+        IAppDbContext context, IOptions<JwtSettings> jwtSettings, IMailService mailService)
     {
         _userManager = userManager;
         _jwtTokenGenerator = jwtTokenGenerator;
         _context = context;
         _jwtSettings = jwtSettings.Value;
+        _mailService = mailService;
     }
     
     public async Task<AuthResult> CompanyRegisterAsync(CompanyRegisterDto dto)
@@ -178,6 +180,35 @@ public class AuthService : IAuthService
             return AuthResult.Fail(result.Errors.Select(e => e.Description));
 
         return AuthResult.Success(userId, token: _jwtTokenGenerator.GenerateToken(user), user.AccountType.ToString());
+    }
+
+    public async Task SendResetPasswordEmailAsync(string email, string resetLink)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+
+        if (user is null)
+            return;
+        
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var resetUrl = $"{resetLink}?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(email)}";
+        var subject = "Reset your password";
+        var body = $"Please reset your password by clicking this link: <a href='{resetUrl}'>Reset Password</a>";
+        
+        await _mailService.SendEmailAsync(user.Email!, subject, body);
+
+    }
+
+    public async Task<AuthResult> ResetPasswordAsync(ResetPasswordDto dto, string email, string token)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user is null)
+            return AuthResult.Fail("User not found");
+
+        var result = await _userManager.ResetPasswordAsync(user, token, dto.NewPassword);
+        if (!result.Succeeded)
+            return AuthResult.Fail(result.Errors.Select(e => e.Description));
+        
+        return AuthResult.Success(user.Id, token: _jwtTokenGenerator.GenerateToken(user), user.AccountType.ToString());
     }
     
     // public async Task<AuthResult> RefreshTokenAsync(string token, string refreshToken)

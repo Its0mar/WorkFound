@@ -10,7 +10,6 @@ using WorkFound.Application.Auth.TokenGenerator;
 using WorkFound.Application.Common.Interface;
 using WorkFound.Domain.Entities.Auth;
 using WorkFound.Infrastructure;
-using Microsoft.IdentityModel.Tokens;
 using WorkFound.Application.Common.Services;
 using WorkFound.Application.Common.Settings;
 using WorkFound.Infrastructure.Services;
@@ -68,6 +67,8 @@ builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(opt =>
     opt.SignIn.RequireConfirmedPhoneNumber = false;
     opt.User.RequireUniqueEmail = true;
 }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
+    opt.TokenLifespan = TimeSpan.FromHours(2));
 
 // builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).AddUserSecrets<Program>();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
