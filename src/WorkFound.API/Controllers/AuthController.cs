@@ -1,4 +1,3 @@
-using System.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkFound.Application.Auth.Dtos;
@@ -8,7 +7,7 @@ using WorkFound.Application.Common.Interface;
 using WorkFound.Application.Common.Result;
 namespace WorkFound.API.Controllers;
 
-[AllowAnonymous]
+
 [ApiController]
 [Route("api/[controller]/[action]")]
 public class AuthController : ControllerBase
@@ -23,8 +22,8 @@ public class AuthController : ControllerBase
         _currentUserService = currentUserService;
     }
     
-    [Authorize]
-    [HttpGet]
+    
+    [HttpGet,Authorize]
     public IActionResult Index()
     {
         return Ok("AuthController is working!");
@@ -64,8 +63,7 @@ public class AuthController : ControllerBase
     public async Task<ActionResult> RequestEmailConfirmation()
     {
         var user = await _currentUserService.GetCurrentUserAsync();
-        if (user is null)
-            return Unauthorized("User not found!");
+        if (user is null) return Unauthorized("User not found!");
 
         await _emailConfirmationService.SendConfirmationEmailAsync(user, $"{Request.Scheme}://{Request.Host}", nameof(ConfirmEmail));
         return Ok("Confirmation email sent successfully!");
@@ -76,8 +74,7 @@ public class AuthController : ControllerBase
     {
         var result = await _authService.ConfirmEmailAsync(token, Guid.Parse(userId));
         
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
+        if (!result.Succeeded) return BadRequest(result.Errors);
 
         return Ok(result);
     }
@@ -87,8 +84,7 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<AuthResult>> ChangePassword([FromForm] ChangePasswordDto dto)
     {
         var result = await _authService.ChangePasswordAsync(dto, User.GetUserId());
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
+        if (!result.Succeeded) return BadRequest(result.Errors);
         
         return result;
     }
@@ -96,7 +92,6 @@ public class AuthController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> ResetPasswordRequest([FromForm] ResetPasswordRequestDto dto)
     {
-
         var resetLink = $"{Request.Scheme}://{Request.Host}/api/auth/{nameof(ResetPassword)}";
         await _authService.SendResetPasswordEmailAsync(dto.Email, resetLink);
         
@@ -108,24 +103,18 @@ public class AuthController : ControllerBase
         string email)
     {
         var result = await _authService.ResetPasswordAsync(dto, email, token);
-        
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
+        if (!result.Succeeded) return BadRequest(result.Errors);
         
         return result;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> RefreshToken(string refreshToken)
+    [HttpPost]
+    public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
     {
-        
-        //var refreshToken = Request.Cookies["refreshToken"];
         var result = await _authService.RefreshTokenAsync(refreshToken);
-
-        if (result.RefreshToken is null || result.RefreshTokenExpireOn is null)
-            return BadRequest("Invalid refresh token!");
-        
-        SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpireOn.Value);
+        if (!result.Succeeded) return BadRequest(result.Errors);
+        //nullable type , but they cant be null in this case, if modified in the future, check for null
+        SetRefreshTokenInCookie(result.RefreshToken!, result.RefreshTokenExpireOn!.Value);
 
         return Ok(result);
     }
@@ -134,13 +123,13 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> RevokeToken(string token)
     {
         var result = await _authService.RevokeTokenAsync(token);
-
-        if(!result)
-            return BadRequest("Token is invalid!");
+        if(!result) return BadRequest("Token is invalid!");
 
         return Ok();
     }
-    
+
+    #region Utitlity Methods
+
     private void SetRefreshTokenInCookie(string refreshToken, DateTime expires)
     {
         var cookieOptions = new CookieOptions
@@ -154,6 +143,10 @@ public class AuthController : ControllerBase
 
         Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
     }
+
+    #endregion
+    
+    
 }
 
 

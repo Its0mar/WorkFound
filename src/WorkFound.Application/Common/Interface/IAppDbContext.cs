@@ -8,5 +8,6 @@ public interface IAppDbContext
 {
     DbSet<CompanyProfile> CompanyProfiles { get; }
     DbSet<UserProfile> UserProfiles { get; }
+    DbSet<T> Set<T>() where T : class;
     Task<int> SaveChangesAsync();
 }
