@@ -304,6 +304,81 @@ namespace WorkFound.Infrastructure.Migrations
                     b.ToTable("CompanyProfiles");
                 });
 
+            modelBuilder.Entity("WorkFound.Domain.Entities.Profile.User.UserEducation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Degree")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FieldOfStudy")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SchoolName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserProfileId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("UserEducations");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Profile.User.UserExperience", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("CompanyProfileId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserProfileId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyProfileId");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("UserExperiences");
+                });
+
             modelBuilder.Entity("WorkFound.Domain.Entities.Profile.User.UserProfile", b =>
                 {
                     b.Property<Guid>("Id")
@@ -342,6 +417,26 @@ namespace WorkFound.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("UserProfiles");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Profile.User.UserSkill", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SkillName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserProfileId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("UserSkills");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -417,6 +512,34 @@ namespace WorkFound.Infrastructure.Migrations
                     b.Navigation("AppUser");
                 });
 
+            modelBuilder.Entity("WorkFound.Domain.Entities.Profile.User.UserEducation", b =>
+                {
+                    b.HasOne("WorkFound.Domain.Entities.Profile.User.UserProfile", "UserProfile")
+                        .WithMany("UserEducations")
+                        .HasForeignKey("UserProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserProfile");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Profile.User.UserExperience", b =>
+                {
+                    b.HasOne("WorkFound.Domain.Entities.Profile.Company.CompanyProfile", "CompanyProfile")
+                        .WithMany()
+                        .HasForeignKey("CompanyProfileId");
+
+                    b.HasOne("WorkFound.Domain.Entities.Profile.User.UserProfile", "UserProfile")
+                        .WithMany("UserExperiences")
+                        .HasForeignKey("UserProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CompanyProfile");
+
+                    b.Navigation("UserProfile");
+                });
+
             modelBuilder.Entity("WorkFound.Domain.Entities.Profile.User.UserProfile", b =>
                 {
                     b.HasOne("WorkFound.Domain.Entities.Auth.AppUser", "AppUser")
@@ -428,6 +551,17 @@ namespace WorkFound.Infrastructure.Migrations
                     b.Navigation("AppUser");
                 });
 
+            modelBuilder.Entity("WorkFound.Domain.Entities.Profile.User.UserSkill", b =>
+                {
+                    b.HasOne("WorkFound.Domain.Entities.Profile.User.UserProfile", "UserProfile")
+                        .WithMany("UserSkills")
+                        .HasForeignKey("UserProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserProfile");
+                });
+
             modelBuilder.Entity("WorkFound.Domain.Entities.Auth.AppUser", b =>
                 {
                     b.Navigation("AdminProfile");
@@ -435,6 +569,15 @@ namespace WorkFound.Infrastructure.Migrations
                     b.Navigation("CompanyProfile");
 
                     b.Navigation("UserProfile");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Profile.User.UserProfile", b =>
+                {
+                    b.Navigation("UserEducations");
+
+                    b.Navigation("UserExperiences");
+
+                    b.Navigation("UserSkills");
                 });
 #pragma warning restore 612, 618
         }

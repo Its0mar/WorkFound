@@ -13,7 +13,9 @@ namespace WorkFound.Infrastructure;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>(options), IAppDbContext
 {
     public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
-
+    public DbSet<UserSkill> UserSkills => Set<UserSkill>();
+    public DbSet<UserExperience> UserExperiences => Set<UserExperience>();
+    public DbSet<UserEducation> UserEducations => Set<UserEducation>();
     public DbSet<CompanyProfile> CompanyProfiles => Set<CompanyProfile>();
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -42,6 +44,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
         builder.Entity<AppUser>()
             .HasIndex(u => u.PhoneNumber)
             .IsUnique();
+        
+        builder.Entity<UserProfile>()
+            .HasMany(up => up.UserSkills)
+            .WithOne(us => us.UserProfile)
+            .HasForeignKey(us => us.UserProfileId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Entity<UserProfile>()
+            .HasMany(up => up.UserExperiences)
+            .WithOne(ue => ue.UserProfile)
+            .HasForeignKey(ue => ue.UserProfileId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Entity<UserProfile>()
+            .HasMany(up => up.UserEducations)
+            .WithOne(ue => ue.UserProfile)
+            .HasForeignKey(ue => ue.UserProfileId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
         
         //to remove the length warning
         // builder.Entity<AppUser>(entiy =>

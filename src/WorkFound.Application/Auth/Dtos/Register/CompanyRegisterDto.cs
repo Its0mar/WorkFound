@@ -1,9 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using WorkFound.Application.Common.Validation;
 using WorkFound.Domain.Entities.Enums;
-using WorkFound.Domain.Entities.Profile.Company;
 
-namespace WorkFound.Application.Auth.Dtos;
+namespace WorkFound.Application.Auth.Dtos.Register;
 
 public record CompanyRegisterDto : RegisterDto
 {

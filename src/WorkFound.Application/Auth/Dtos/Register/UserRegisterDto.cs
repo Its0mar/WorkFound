@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WorkFound.Application.Auth.Dtos;
+namespace WorkFound.Application.Auth.Dtos.Register;
 
 public record UserRegisterDto : RegisterDto
 {

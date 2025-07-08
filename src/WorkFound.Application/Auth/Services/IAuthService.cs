@@ -1,4 +1,6 @@
 using WorkFound.Application.Auth.Dtos;
+using WorkFound.Application.Auth.Dtos.Password;
+using WorkFound.Application.Auth.Dtos.Register;
 using WorkFound.Application.Common.Result;
 
 namespace WorkFound.Application.Auth.Services;

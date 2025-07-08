@@ -2,6 +2,8 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WorkFound.Application.Auth.Dtos;
+using WorkFound.Application.Auth.Dtos.Password;
+using WorkFound.Application.Auth.Dtos.Register;
 using WorkFound.Application.Auth.Extensions;
 using WorkFound.Application.Auth.TokenGenerator;
 using WorkFound.Application.Common.Interface;
@@ -164,7 +166,7 @@ public class AuthService : IAuthService
         
         if (duplicatePhone)
             return AuthResult.Fail("Phone number already exists");
-        
+        user.RefreshToken = string.Empty; // to pass the no null constraint
         var result = await _userManager.CreateAsync(user, password);
         if (!result.Succeeded)
             return AuthResult.Fail(result.Errors.Select(e => e.Description));

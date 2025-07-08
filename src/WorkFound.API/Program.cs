@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -12,6 +13,7 @@ using WorkFound.Domain.Entities.Auth;
 using WorkFound.Infrastructure;
 using WorkFound.Application.Common.Services;
 using WorkFound.Application.Common.Settings;
+using WorkFound.Application.User.Services;
 using WorkFound.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -113,7 +115,7 @@ builder.Services.AddAuthentication(options =>
             },
             OnTokenValidated = context =>
             {
-                Console.WriteLine($"✅ Token validated for user: {context.Principal.Identity?.Name}");
+                Console.WriteLine($"✅ Token validated for user: {context.Principal?.Identity?.Name}");
                 return Task.CompletedTask;
             },
             OnMessageReceived = context =>
@@ -124,7 +126,14 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(opt =>
+{
+    opt.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    opt.AddPolicy("RequireAnonymous", policy =>
+    {
+        policy.RequireAssertion(context => !context.User.Identity?.IsAuthenticated ?? false);
+    });
+});
 
 
 
@@ -136,7 +145,7 @@ builder.Services.AddScoped<IAppDbContext, AppDbContext>();
 builder.Services.AddScoped<IMailService, MailKitMailService>();
 builder.Services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

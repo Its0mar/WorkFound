@@ -1,7 +1,9 @@
-using WorkFound.Application.Auth.Dtos;
+using WorkFound.Application.Auth.Dtos.Register;
+using WorkFound.Application.Auth.Dtos.UserProfileDtos;
 using WorkFound.Domain.Entities.Auth;
-using WorkFound.Domain.Entities.Profile.Company;
 using WorkFound.Domain.Entities.Profile.User;
+using WorkFound.Domain.Entities.Profile.Company;
+
 
 namespace WorkFound.Application.Auth.Extensions;
 
@@ -33,7 +35,7 @@ public static class Mapping
             LocationType = dto.LocationType,
         };
     }
-
+    
     public static UserProfile ToUserProfile(this UserRegisterDto dto, AppUser user)
     {
         return new UserProfile()
@@ -47,4 +49,41 @@ public static class Mapping
             ProfilePictureUrl = dto.ProfilePictureUrl,
         };
     }
+    
+    public static UserExperience ToUserExperience(this UserExperinceDto dto, Guid userProfileId)
+    {
+        return new UserExperience()
+        {
+            UserProfileId = userProfileId,
+            CompanyName = dto.CompanyName,
+            Title = dto.Title,
+            StartDate = dto.StartDate,
+            EndDate = dto.EndDate,
+            Description = dto.Description,
+        };
+    }
+
+    public static UserSkill ToUserSkill(this UserSkillDto dto, Guid userProfileId)
+    {
+        return new UserSkill()
+        {
+            SkillName = dto.SkillName,
+            UserProfileId = userProfileId,
+        };
+    }
+    
+    public static UserEducation ToUserEducation(this UserEducationDto dto, Guid userProfileId)
+    {
+        return new UserEducation()
+        {
+            UserProfileId = userProfileId,
+            Degree = dto.Degree,
+            FieldOfStudy = dto.FieldOfStudy,
+            SchoolName = dto.SchoolName,
+            StartDate = dto.StartDate,
+            EndDate = dto.EndDate,
+        };
+    }
+        
+    
 }

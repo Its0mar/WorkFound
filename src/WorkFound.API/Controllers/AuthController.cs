@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkFound.Application.Auth.Dtos;
+using WorkFound.Application.Auth.Dtos.Password;
+using WorkFound.Application.Auth.Dtos.Register;
 using WorkFound.Application.Auth.Extensions;
 using WorkFound.Application.Auth.Services;
 using WorkFound.Application.Common.Interface;
@@ -29,7 +31,7 @@ public class AuthController : ControllerBase
         return Ok("AuthController is working!");
     }
     
-    [HttpPost]
+    [HttpPost, Authorize(policy:"RequireAnonymous")]
     public async Task<IActionResult> CompanyRegister([FromForm]CompanyRegisterDto dto)
     {
         var result = await _authService.CompanyRegisterAsync(dto);
@@ -39,7 +41,8 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
     
-    [HttpPost]
+    [HttpPost, Authorize(policy:"RequireAnonymous")]
+    
     public async Task<ActionResult<AuthResult>> UserRegister([FromForm]UserRegisterDto dto)
     {
         var result = await _authService.UserRegisterAsync(dto);
@@ -49,7 +52,7 @@ public class AuthController : ControllerBase
         return result;
     }
 
-    [HttpPost]
+    [HttpPost, Authorize(policy:"RequireAnonymous")]
     public async Task<ActionResult<AuthResult>> Login([FromForm] LoginDto dto)
     {
         var result = await _authService.LoginAsync(dto);

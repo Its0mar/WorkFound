@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using WorkFound.Domain.Entities.Auth;
 
-namespace WorkFound.Application.Auth.Dtos;
+namespace WorkFound.Application.Auth.Dtos.Register;
 
 public record RegisterDto
 {
