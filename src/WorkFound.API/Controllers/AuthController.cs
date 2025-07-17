@@ -42,7 +42,6 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost, Authorize(policy:"RequireAnonymous")]
-    
     public async Task<ActionResult<AuthResult>> UserRegister([FromForm]UserRegisterDto dto)
     {
         var result = await _authService.UserRegisterAsync(dto);
@@ -72,7 +71,7 @@ public class AuthController : ControllerBase
         return Ok("Confirmation email sent successfully!");
     }
     
-    [HttpGet]
+    [HttpPost]
     public async Task<ActionResult<AuthResult>> ConfirmEmail([FromQuery]string userId ,string token)
     {
         var result = await _authService.ConfirmEmailAsync(token, Guid.Parse(userId));
@@ -93,10 +92,10 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> ResetPasswordRequest([FromForm] ResetPasswordRequestDto dto)
+    public async Task<ActionResult> ResetPasswordRequest([FromBody] string email)
     {
         var resetLink = $"{Request.Scheme}://{Request.Host}/api/auth/{nameof(ResetPassword)}";
-        await _authService.SendResetPasswordEmailAsync(dto.Email, resetLink);
+        await _authService.SendResetPasswordEmailAsync(email, resetLink);
         
         return Ok("If an account with this email exists, a reset password link has been sent to it.");
     }

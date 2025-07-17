@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using WorkFound.Domain.Entities.Auth;
 using WorkFound.Domain.Entities.Enums;
+using WorkFound.Domain.Entities.Jobs;
 using WorkFound.Domain.Entities.Profile.Company;
 
 namespace WorkFound.Domain.Entities.Profile.Company;
@@ -17,4 +18,5 @@ public class CompanyProfile
     public string? LogoUrl { get; set; }
     public CompanyLocationType LocationType { get; set; }
     public string? Location { get; set; }
+    public List<Job> Jobs { get; set; } = new();
 }

@@ -1,6 +1,8 @@
 using WorkFound.Application.Auth.Dtos.Register;
 using WorkFound.Application.Auth.Dtos.UserProfileDtos;
+using WorkFound.Application.Jobs.Dto;
 using WorkFound.Domain.Entities.Auth;
+using WorkFound.Domain.Entities.Jobs;
 using WorkFound.Domain.Entities.Profile.User;
 using WorkFound.Domain.Entities.Profile.Company;
 
@@ -85,5 +87,17 @@ public static class Mapping
         };
     }
         
-    
+    public static Job ToJob(this AddJobDto dto, Guid companyId)
+    {
+        return new Job()
+        {
+            Title = dto.Title,
+            Description = dto.Description,
+            CompanyId = companyId,
+            Location = dto.Location,
+            LocationType = dto.LocationType,
+            IsOpen = dto.IsOpen,
+            IsPublic = dto.IsPublic,
+        };
+    }
 }

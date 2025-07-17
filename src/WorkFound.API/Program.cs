@@ -13,6 +13,7 @@ using WorkFound.Domain.Entities.Auth;
 using WorkFound.Infrastructure;
 using WorkFound.Application.Common.Services;
 using WorkFound.Application.Common.Settings;
+using WorkFound.Application.Jobs.Services;
 using WorkFound.Application.User.Services;
 using WorkFound.Infrastructure.Services;
 
@@ -146,6 +147,7 @@ builder.Services.AddScoped<IMailService, MailKitMailService>();
 builder.Services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IJobService, JobService>();
 
 var app = builder.Build();
 

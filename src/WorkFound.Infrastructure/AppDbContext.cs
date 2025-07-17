@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WorkFound.Application.Common.Interface;
 using WorkFound.Domain.Entities.Auth;
+using WorkFound.Domain.Entities.Jobs;
 using WorkFound.Domain.Entities.Profile.Admin;
 using WorkFound.Domain.Entities.Profile.Company;
 using WorkFound.Domain.Entities.Profile.User;
@@ -17,6 +18,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<UserExperience> UserExperiences => Set<UserExperience>();
     public DbSet<UserEducation> UserEducations => Set<UserEducation>();
     public DbSet<CompanyProfile> CompanyProfiles => Set<CompanyProfile>();
+    public DbSet<Job> Jobs => Set<Job>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -63,6 +65,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .HasForeignKey(ue => ue.UserProfileId)
             .OnDelete(DeleteBehavior.Cascade);
         
+        builder.Entity<CompanyProfile>()
+            .HasMany(cp => cp.Jobs)
+            .WithOne(j => j.CompanyProfile)
+            .HasForeignKey(j => j.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         //to remove the length warning
         // builder.Entity<AppUser>(entiy =>

@@ -247,6 +247,46 @@ namespace WorkFound.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Job", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsOpen")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("LocationType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Jobs");
+                });
+
             modelBuilder.Entity("WorkFound.Domain.Entities.Profile.Admin.AdminProfile", b =>
                 {
                     b.Property<Guid>("Id")
@@ -490,6 +530,17 @@ namespace WorkFound.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Job", b =>
+                {
+                    b.HasOne("WorkFound.Domain.Entities.Profile.Company.CompanyProfile", "CompanyProfile")
+                        .WithMany("Jobs")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CompanyProfile");
+                });
+
             modelBuilder.Entity("WorkFound.Domain.Entities.Profile.Admin.AdminProfile", b =>
                 {
                     b.HasOne("WorkFound.Domain.Entities.Auth.AppUser", "AppUser")
@@ -569,6 +620,11 @@ namespace WorkFound.Infrastructure.Migrations
                     b.Navigation("CompanyProfile");
 
                     b.Navigation("UserProfile");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Profile.Company.CompanyProfile", b =>
+                {
+                    b.Navigation("Jobs");
                 });
 
             modelBuilder.Entity("WorkFound.Domain.Entities.Profile.User.UserProfile", b =>
