@@ -4,7 +4,7 @@ namespace WorkFound.Application.Files;
 
 public interface IFileService
 {
-    Task<FileUploadResult> UploadFileAsync(IFormFile file, string folder);
-    Task<byte[]> GetFileAsync(string relativePath);
-    bool DeleteFile(string relativePath);
+    Task<string?> UploadFileAsync(Stream fileStream, string fileName, string folder);
+    // Task<byte[]> GetFileAsync(string relativePath);
+    // bool DeleteFile(string relativePath);
 }

@@ -52,7 +52,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost, Authorize(policy:"RequireAnonymous")]
-    public async Task<ActionResult<AuthResult>> Login([FromForm] LoginDto dto)
+    public async Task<ActionResult<AuthResult>> Login([FromBody] LoginDto dto)
     {
         var result = await _authService.LoginAsync(dto);
         if (!result.Succeeded)

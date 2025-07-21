@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using WorkFound.Application.Auth.Dtos.UserProfileDtos;
 using WorkFound.Application.Auth.Extensions;
 using WorkFound.Application.Common.Interface;
+using WorkFound.Application.Files;
 using WorkFound.Domain.Entities.Profile.User;
 
 namespace WorkFound.Application.User.Services;

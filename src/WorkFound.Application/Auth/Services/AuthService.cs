@@ -59,9 +59,9 @@ public class AuthService : IAuthService
     
     public async Task<AuthResult> LoginAsync(LoginDto dto)
     {
-        var user = await _userManager.FindByEmailAsync(dto.EmailOrUsername) ??
-                   await _userManager.FindByNameAsync(dto.EmailOrUsername) ??
-                   await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == dto.EmailOrUsername);
+        var user = await _userManager.FindByEmailAsync(dto.Identifier) ??
+                   await _userManager.FindByNameAsync(dto.Identifier) ??
+                   await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == dto.Identifier);
         
         if (user == null || !await _userManager.CheckPasswordAsync(user, dto.Password))
             return AuthResult.Fail("Invalid credentials");

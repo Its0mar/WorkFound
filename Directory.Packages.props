@@ -19,5 +19,6 @@
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
     <PackageVersion Include="MailKit" Version="3.6.0" />
+    <PackageVersion Include="CloudinaryDotNet" Version="1.27.6" />
   </ItemGroup>
 </Project>
