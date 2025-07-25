@@ -17,11 +17,14 @@ public class AuthController : ControllerBase
     private readonly IAuthService _authService;
     private readonly IEmailConfirmationService _emailConfirmationService;
     private readonly ICurrentUserService _currentUserService;
-    public AuthController(IAuthService authService, IEmailConfirmationService emailConfirmationService, ICurrentUserService currentUserService)
+    private readonly IConfiguration _configuration;
+    public AuthController(IAuthService authService, IEmailConfirmationService emailConfirmationService,
+        ICurrentUserService currentUserService, IConfiguration configuration)
     {
         _authService = authService;
         _emailConfirmationService = emailConfirmationService;
         _currentUserService = currentUserService;
+        _configuration = configuration;
     }
     
     
@@ -91,31 +94,38 @@ public class AuthController : ControllerBase
         return result;
     }
 
-    [HttpPost]
-    public async Task<ActionResult> ResetPasswordRequest([FromBody] string email)
+    [HttpPost, Authorize(policy:"RequireAnonymous")]
+    public async Task<ActionResult> ResetPasswordRequest([FromBody] RequestResetPasswordDto dto)
     {
-        var resetLink = $"{Request.Scheme}://{Request.Host}/api/auth/{nameof(ResetPassword)}";
-        await _authService.SendResetPasswordEmailAsync(email, resetLink);
+        var resetUrl = _configuration["FrontEndUrls:resetPasswordUrl"];
+        if (string.IsNullOrEmpty(resetUrl))
+            return BadRequest("Reset password URL is not configured.");
+        //TODO: log
+        
+        //var resetLink = $"{Request.Scheme}://{Request.Host}/api/auth/{nameof(ResetPassword)}";
+        await _authService.SendResetPasswordEmailAsync(dto.Email, resetUrl);
         
         return Ok("If an account with this email exists, a reset password link has been sent to it.");
     }
 
-    [HttpPost]
-    public async Task<ActionResult<AuthResult>> ResetPassword([FromForm] ResetPasswordDto dto, [FromQuery] string token,
-        string email)
+    [HttpPost, Authorize(policy:"RequireAnonymous")]
+    public async Task<ActionResult<AuthResult>> ResetPassword([FromBody] ResetPasswordDto dto)
     {
-        var result = await _authService.ResetPasswordAsync(dto, email, token);
+        var result = await _authService.ResetPasswordAsync(dto, dto.Email, dto.Token);
         if (!result.Succeeded) return BadRequest(result.Errors);
         
         return result;
     }
 
     [HttpPost]
-    public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
+    public async Task<IActionResult> RefreshToken()
     {
+        var refreshToken = Request.Cookies["refreshToken"];
+        if (string.IsNullOrEmpty(refreshToken))
+            return BadRequest("Refresh token is missing or invalid.");
         var result = await _authService.RefreshTokenAsync(refreshToken);
         if (!result.Succeeded) return BadRequest(result.Errors);
-        //nullable type , but they cant be null in this case, if modified in the future, check for null
+        //nullable type, but they cant be null in this case, if modified in the future, check for null
         SetRefreshTokenInCookie(result.RefreshToken!, result.RefreshTokenExpireOn!.Value);
 
         return Ok(result);

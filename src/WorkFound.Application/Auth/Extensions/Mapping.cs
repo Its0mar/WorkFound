@@ -29,7 +29,7 @@ public static class Mapping
         {
             // AppUser = user,
             AppUserId = user.Id,
-            Name = dto.CompanyName,
+            Name = dto.Name,
             Description = dto.Description,
             Website = dto.Website,
             LogoUrl = dto.LogoUrl,

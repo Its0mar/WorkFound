@@ -2,11 +2,20 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WorkFound.Application.Auth.Dtos.Password;
 
-public record ResetPasswordDto
+public class ResetPasswordDto
 {
+    [Required]
+    public string Token { get; set; } = string.Empty;
+
+    [Required]
+    public string Email { get; set; } = string.Empty;
+
+    [Required]
     [DataType(DataType.Password)]
-    public required string NewPassword { get; init; }
+    public string NewPassword { get; set; } = string.Empty;
+
+    [Required]
     [DataType(DataType.Password)]
     [Compare(nameof(NewPassword), ErrorMessage = "Passwords do not match")]
-    public required string ConfirmPassword { get; init; }
+    public string ConfirmPassword { get; set; } = string.Empty;
 }

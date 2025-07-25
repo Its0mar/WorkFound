@@ -1,6 +1,7 @@
 import { useState } from "react";
-import "../styles/login.css";
+import styles from '../styles/login.module.css'
 import { Login } from "../../../api/authApi";
+import { Link } from "react-router-dom";
 
 export const LoginForm = () => {
   const [identifier, setIdentifier] = useState("");
@@ -24,7 +25,7 @@ export const LoginForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSumbit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setServerError("");
     if (!validate()) return;
@@ -44,8 +45,8 @@ export const LoginForm = () => {
   };
 
   return (
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleSumbit}>
+    <div className={styles.loginContainer}>
+      <form className={styles.loginForm} onSubmit={handleSubmit}>
         <h2>Login</h2>
 
         <label>Email Or User name</label>
@@ -55,7 +56,7 @@ export const LoginForm = () => {
           onChange={(e) => setIdentifier(e.target.value)}
         />
         {errors.identifier && (
-          <div className="error-text">{errors.identifier}</div>
+          <div className={styles.errorText}>{errors.identifier}</div>
         )}
 
         <label>Password</label>
@@ -65,9 +66,9 @@ export const LoginForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        {errors.password && <div className="error-text">{errors.password}</div>}
+        {errors.password && <div className={styles.errorText}>{errors.password}</div>}
 
-        <div className="remember-me">
+        <div className={styles.rememberMe}>
           <input
             type="checkbox"
             checked={rememberMe}
@@ -77,11 +78,16 @@ export const LoginForm = () => {
           <label htmlFor="rememberMe">Remember Me</label>
         </div>
 
-        {errors.general && <div className="error-text">{errors.general}</div>}
+        {errors.general && <div className={styles.errorText}>{errors.general}</div>}
 
         <button type="submit" disabled={loading}>
           {loading ? "Logging in..." : "login"}
         </button>
+        <hr className={styles.divider} />
+        <div className={styles.loginLinks}>
+          <Link to="/register">Don't have an account?</Link>
+          <Link to="/reset-password-request">Forgot your password?</Link>
+        </div>
       </form>
     </div>
   );
