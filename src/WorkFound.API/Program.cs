@@ -13,6 +13,7 @@ using WorkFound.Domain.Entities.Auth;
 using WorkFound.Infrastructure;
 using WorkFound.Application.Common.Services;
 using WorkFound.Application.Common.Settings;
+using WorkFound.Application.Files;
 using WorkFound.Application.Jobs.Services;
 using WorkFound.Application.User.Services;
 using WorkFound.Infrastructure.Services;
@@ -76,7 +77,7 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
 // builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).AddUserSecrets<Program>();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
 
 builder.Services.AddAuthentication(options =>
     {
@@ -148,6 +149,7 @@ builder.Services.AddScoped<IEmailConfirmationService, EmailConfirmationService>(
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJobService, JobService>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 var app = builder.Build();
 

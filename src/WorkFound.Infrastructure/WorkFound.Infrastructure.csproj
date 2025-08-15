@@ -11,6 +11,8 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design"/>
         <PackageReference Include="MailKit" />
+        <PackageReference Include="CloudinaryDotNet" />
+        <PackageReference Include="Newtonsoft.Json"  />
 
     </ItemGroup>
 

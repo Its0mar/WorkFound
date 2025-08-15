@@ -17,6 +17,34 @@ public class UserProfileController : ControllerBase
     {
         _userService = userService;
     }
+
+    [HttpPut("update-profile-picture"), Authorize]
+    public async Task<IActionResult> UpdateProfilePicture(IFormFile file)
+    {
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        string[] allowedExtensions = { ".jpg", ".jpeg", ".png" };
+        if (!allowedExtensions.Contains(extension))
+            return BadRequest("Invalid file type. Only .jpg, .jpeg, and .png are allowed.");
+        
+        var result = await  _userService.UpdateProfilePicture(User.GetUserId(), file.OpenReadStream(), file.FileName);
+         
+        if (!result)
+              return BadRequest("Failed to update profile picture.");
+       
+        return Ok("Profile picture updated successfully.");
+    }
+
+    [HttpDelete("delete-profile-picture"), Authorize]
+    public async Task<IActionResult> DeleteProfilePicture()
+    {
+        var id = User.GetUserId();
+        var result = await _userService.DeleteProfilePicture(id);
+        
+        if (!result)
+            return BadRequest("Failed to delete profile picture.");
+        
+        return Ok("Profile picture deleted successfully.");
+    }
     
     [HttpPost("add-experience")]
     public async Task<IActionResult> AddExperience([FromForm] UserExperinceDto dto)
