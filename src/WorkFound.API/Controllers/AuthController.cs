@@ -122,8 +122,7 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> RevokeToken(string token)
-    {
+    public async Task<IActionResult> RevokeToken(string token) {
         var result = await _authService.RevokeTokenAsync(token);
         if(!result) return BadRequest("Token is invalid!");
 

@@ -1,9 +1,10 @@
+using WorkFound.Domain.Entities.Common;
 using WorkFound.Domain.Entities.Enums;
 using WorkFound.Domain.Entities.Profile.Company;
 
 namespace WorkFound.Domain.Entities.Jobs;
 
-public class Job
+public class JobPost
 {
     public Guid Id { get; set; }
     public required string Title { get; set; } 
@@ -16,6 +17,8 @@ public class Job
     
     public Guid CompanyId { get; set; }
     public CompanyProfile? CompanyProfile { get; set; }
+    
+    public List<Skill> Skills { get; set; } = new();
     
 }
 

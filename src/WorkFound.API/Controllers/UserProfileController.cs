@@ -74,28 +74,28 @@ public class UserProfileController : ControllerBase
         return Ok("Skill added successfully.");
     }
     
-    [HttpDelete("remove-experience/{id}")]
-    public async Task<IActionResult> RemoveExperience(Guid id)
+    [HttpDelete("remove-experience/{experienceId}")]
+    public async Task<IActionResult> RemoveExperience(Guid experienceId)
     {
-        var result = await _userService.RemoveExperince(id);
+        var result = await _userService.RemoveExperince(experienceId);
         if (!result)
             return BadRequest("Failed to remove experience.");
         return Ok("Experience removed successfully.");
     }
     
-    [HttpDelete("remove-education/{id}")]
-    public async Task<IActionResult> RemoveEducation(Guid id)
+    [HttpDelete("remove-education/{educationId}")]
+    public async Task<IActionResult> RemoveEducation(Guid educationId)
     {
-        var result = await _userService.RemoveEducation(id);
+        var result = await _userService.RemoveEducation(educationId);
         if (!result)
             return BadRequest("Failed to remove education.");
         return Ok("Education removed successfully.");
     }
     
-    [HttpDelete("remove-skill/{id}")]
-    public async Task<IActionResult> RemoveSkill(Guid id)
+    [HttpDelete("remove-skill/{skillId}")]
+    public async Task<IActionResult> RemoveSkill(Guid skillId)
     {
-        var result = await _userService.RemoveSkill(id);
+        var result = await _userService.RemoveSkill(User.GetUserId(), skillId);
         if (!result)
             return BadRequest("Failed to remove skill.");
         return Ok("Skill removed successfully.");

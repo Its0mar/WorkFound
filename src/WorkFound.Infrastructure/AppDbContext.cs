@@ -2,8 +2,10 @@ using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using WorkFound.Application.Common.Interface;
 using WorkFound.Domain.Entities.Auth;
+using WorkFound.Domain.Entities.Common;
 using WorkFound.Domain.Entities.Jobs;
 using WorkFound.Domain.Entities.Profile.Admin;
 using WorkFound.Domain.Entities.Profile.Company;
@@ -14,11 +16,11 @@ namespace WorkFound.Infrastructure;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>(options), IAppDbContext
 {
     public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
-    public DbSet<UserSkill> UserSkills => Set<UserSkill>();
     public DbSet<UserExperience> UserExperiences => Set<UserExperience>();
     public DbSet<UserEducation> UserEducations => Set<UserEducation>();
     public DbSet<CompanyProfile> CompanyProfiles => Set<CompanyProfile>();
-    public DbSet<Job> Jobs => Set<Job>();
+    public DbSet<JobPost> Jobs => Set<JobPost>();
+    public DbSet<Skill> Skills => Set<Skill>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -47,11 +49,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .HasIndex(u => u.PhoneNumber)
             .IsUnique();
         
+        builder.Entity<Skill>()
+            .HasIndex(s => s.Name)
+            .IsUnique();
+        
+        builder.Entity<JobPost>()
+            .HasMany(j => j.Skills)
+            .WithMany(s => s.JobPosts)
+            .UsingEntity(j => j.ToTable("JobPostSkills"));
+        
         builder.Entity<UserProfile>()
-            .HasMany(up => up.UserSkills)
-            .WithOne(us => us.UserProfile)
-            .HasForeignKey(us => us.UserProfileId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .HasMany(up => up.Skills)
+            .WithMany(us => us.UserProfiles)
+            .UsingEntity(j => j.ToTable("UserProfileSkills"));        
         
         builder.Entity<UserProfile>()
             .HasMany(up => up.UserExperiences)

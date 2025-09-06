@@ -17,6 +17,21 @@ namespace WorkFound.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
 
+            modelBuilder.Entity("JobPostSkill", b =>
+                {
+                    b.Property<Guid>("JobPostsId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("SkillsId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("JobPostsId", "SkillsId");
+
+                    b.HasIndex("SkillsId");
+
+                    b.ToTable("JobPostSkills", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
                     b.Property<Guid>("Id")
@@ -163,6 +178,21 @@ namespace WorkFound.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("SkillUserProfile", b =>
+                {
+                    b.Property<Guid>("SkillsId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserProfilesId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("SkillsId", "UserProfilesId");
+
+                    b.HasIndex("UserProfilesId");
+
+                    b.ToTable("UserProfileSkills", (string)null);
+                });
+
             modelBuilder.Entity("WorkFound.Domain.Entities.Auth.AppUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -247,7 +277,22 @@ namespace WorkFound.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Job", b =>
+            modelBuilder.Entity("WorkFound.Domain.Entities.Common.Skill", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Skills");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.JobPost", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -459,24 +504,19 @@ namespace WorkFound.Infrastructure.Migrations
                     b.ToTable("UserProfiles");
                 });
 
-            modelBuilder.Entity("WorkFound.Domain.Entities.Profile.User.UserSkill", b =>
+            modelBuilder.Entity("JobPostSkill", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                    b.HasOne("WorkFound.Domain.Entities.Jobs.JobPost", null)
+                        .WithMany()
+                        .HasForeignKey("JobPostsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<string>("SkillName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("UserProfileId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserProfileId");
-
-                    b.ToTable("UserSkills");
+                    b.HasOne("WorkFound.Domain.Entities.Common.Skill", null)
+                        .WithMany()
+                        .HasForeignKey("SkillsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -530,7 +570,22 @@ namespace WorkFound.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Job", b =>
+            modelBuilder.Entity("SkillUserProfile", b =>
+                {
+                    b.HasOne("WorkFound.Domain.Entities.Common.Skill", null)
+                        .WithMany()
+                        .HasForeignKey("SkillsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WorkFound.Domain.Entities.Profile.User.UserProfile", null)
+                        .WithMany()
+                        .HasForeignKey("UserProfilesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.JobPost", b =>
                 {
                     b.HasOne("WorkFound.Domain.Entities.Profile.Company.CompanyProfile", "CompanyProfile")
                         .WithMany("Jobs")
@@ -602,17 +657,6 @@ namespace WorkFound.Infrastructure.Migrations
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("WorkFound.Domain.Entities.Profile.User.UserSkill", b =>
-                {
-                    b.HasOne("WorkFound.Domain.Entities.Profile.User.UserProfile", "UserProfile")
-                        .WithMany("UserSkills")
-                        .HasForeignKey("UserProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserProfile");
-                });
-
             modelBuilder.Entity("WorkFound.Domain.Entities.Auth.AppUser", b =>
                 {
                     b.Navigation("AdminProfile");
@@ -632,8 +676,6 @@ namespace WorkFound.Infrastructure.Migrations
                     b.Navigation("UserEducations");
 
                     b.Navigation("UserExperiences");
-
-                    b.Navigation("UserSkills");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,5 @@
 using WorkFound.Domain.Entities.Auth;
+using WorkFound.Domain.Entities.Common;
 
 namespace WorkFound.Domain.Entities.Profile.User;
 
@@ -15,6 +16,7 @@ public class UserProfile
         
     public List<UserExperience> UserExperiences { get; set; } = new();
     public List<UserEducation> UserEducations { get; set; } = new();
-    public List<UserSkill> UserSkills { get; set; } = new();
+    // public List<UserSkill> UserSkills { get; set; } = new();
+    public List<Skill> Skills { get; set; } = new();
     public string Name => $"{FirstName} {LastName}";
 }

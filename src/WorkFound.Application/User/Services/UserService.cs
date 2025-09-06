@@ -3,6 +3,7 @@ using WorkFound.Application.Auth.Dtos.UserProfileDtos;
 using WorkFound.Application.Auth.Extensions;
 using WorkFound.Application.Common.Interface;
 using WorkFound.Application.Files;
+using WorkFound.Domain.Entities.Common;
 
 namespace WorkFound.Application.User.Services;
 
@@ -71,10 +72,24 @@ public class UserService : IUserService
     {
         if (!GetUserProfileId(appUserId, out var userProfileId))
             return false;
+        var userProfile = await _context.UserProfiles
+            .Include(u => u.Skills)
+            .FirstOrDefaultAsync(x => x.Id == userProfileId);
+        if (userProfile is null) return false;
         
-        var skill = dto.ToUserSkill(userProfileId);
-        await _context.UserSkills.AddAsync(skill);
-        return (await _context.SaveChangesAsync() > 0 ? true : false);
+        if (userProfile.Skills.Any(s => s.Name.ToLower() == dto.SkillName.ToLower()))
+            return false; // Skill already exists for this user
+        var skill = await _context.Skills
+            .FirstOrDefaultAsync(s => s.Name.ToLower() == dto.SkillName.ToLower());
+        if (skill is null)
+        {
+            skill = new Skill() { Name = dto.SkillName };
+            await _context.Skills.AddAsync(skill);
+            await _context.SaveChangesAsync(); 
+        }
+
+        userProfile.Skills.Add(skill);
+        return await _context.SaveChangesAsync() > 0 ;
     }
     
     public async Task<bool> AddExperince(UserExperinceDto dto, Guid appUserId)
@@ -95,12 +110,34 @@ public class UserService : IUserService
         return (await _context.SaveChangesAsync() > 0 ? true : false);
     }
     
-    public async Task<bool> RemoveSkill(Guid id)
+    public async Task<bool> RemoveSkill(Guid userId, Guid skillId)
     {
-        var skill = await _context.UserSkills.FirstOrDefaultAsync(s => s.Id == id);
+        if (!GetUserProfileId(userId, out var userProfileId))
+            return false;
+        
+        var userProfile = await _context.UserProfiles
+            .Include(up => up.Skills)
+            .FirstOrDefaultAsync(up => up.Id == userProfileId);
+        if (userProfile is null) return false;
+        
+        var skill = userProfile.Skills.FirstOrDefault(s => s.Id == skillId);
         if (skill is null) return false;
-        _context.UserSkills.Remove(skill);
-        return (await _context.SaveChangesAsync() > 0 ? true : false);
+        userProfile.Skills.Remove(skill);
+        await _context.SaveChangesAsync();
+        
+        bool isUsed = await _context.UserProfiles
+            .AnyAsync(up => up.Skills.Any(s => s.Id == skill.Id));
+
+        bool isUsedByJob = await _context.Jobs
+            .AnyAsync(jp => jp.Skills.Any(s => s.Id == skill.Id));
+
+        if (!isUsed && !isUsedByJob)
+        {
+            _context.Skills.Remove(skill);
+            await _context.SaveChangesAsync();
+        }
+        
+        return await _context.SaveChangesAsync() > 0 ;
     }
     
     public async Task<bool> RemoveExperince(Guid id)

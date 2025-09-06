@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using WorkFound.Domain.Entities.Common;
 using WorkFound.Domain.Entities.Jobs;
 using WorkFound.Domain.Entities.Profile.Company;
 using WorkFound.Domain.Entities.Profile.User;
@@ -11,8 +12,8 @@ public interface IAppDbContext
     DbSet<UserProfile> UserProfiles { get; }
     DbSet<UserExperience> UserExperiences { get; }
     DbSet<UserEducation> UserEducations { get; }
-    DbSet<UserSkill> UserSkills { get; }
-    DbSet<Job> Jobs { get; }
+    DbSet<Skill> Skills { get; }
+    DbSet<JobPost> Jobs { get; }
     DbSet<T> Set<T>() where T : class;
     Task<int> SaveChangesAsync();
 }

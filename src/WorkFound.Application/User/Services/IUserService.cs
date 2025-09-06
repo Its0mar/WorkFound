@@ -12,7 +12,7 @@ public interface IUserService
     public Task<bool> AddExperince(UserExperinceDto dto, Guid appUserId);
 
     public Task<bool> RemoveEducation(Guid id);
-    public Task<bool> RemoveSkill(Guid id);
+    public Task<bool> RemoveSkill(Guid userId, Guid skillId);
     public Task<bool> RemoveExperince(Guid id);
 
 

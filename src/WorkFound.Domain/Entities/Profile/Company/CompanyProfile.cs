@@ -18,5 +18,5 @@ public class CompanyProfile
     public string? LogoUrl { get; set; }
     public CompanyLocationType LocationType { get; set; }
     public string? Location { get; set; }
-    public List<Job> Jobs { get; set; } = new();
+    public List<JobPost> Jobs { get; set; } = new();
 }

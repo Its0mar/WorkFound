@@ -23,9 +23,9 @@ public class JobsController : ControllerBase
     
     [HttpPost]
     [Authorize(Roles = "Company"), Route("create-job")]
-    public async Task<IActionResult> CreateJob([FromForm] AddJobDto dto)
+    public async Task<IActionResult> CreateJob([FromForm] AddJobPostDto postDto)
     {
-        if (!await _jobService.AddJobAsync(dto, User.GetUserId()))
+        if (!await _jobService.AddJobAsync(postDto, User.GetUserId()))
             return BadRequest("Failed to create job.");
                 
         return Ok("Job created successfully!");
@@ -67,4 +67,28 @@ public class JobsController : ControllerBase
         return Ok("Job updated successfully!");
     }
     
+    //add job skill
+    [HttpPut, Authorize(Roles = "Company"), Route("add-skill-job")] 
+    public async Task<IActionResult> AddJobSkill([FromForm] AddJobSkillDto dto)
+    {
+        var companyId = User.GetUserId();
+        var result = await _jobService.AddJobSkillAsync(dto, companyId);
+        if (!result)
+            return BadRequest("Failed to add job skill.");
+        return Ok("Job skill added successfully.");
+    }
+
+    [HttpDelete, Authorize(Roles = "Company"), Route("remove-skill-job")]
+    public async Task<IActionResult> DeleteJobSkill([FromForm] RemoveJobSkillDto dto)
+    {
+        var companyId = User.GetUserId();
+        var result = await _jobService.RemoveJobSkillAsync(dto, companyId);
+        if (!result)
+            return BadRequest("Failed to remove job skill.");
+        return Ok("Job skill removed successfully.");
+    }
+    
+    //update job skill
+    //delete job skill
+        
 }

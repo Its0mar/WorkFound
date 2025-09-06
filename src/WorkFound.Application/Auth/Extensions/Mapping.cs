@@ -2,6 +2,7 @@ using WorkFound.Application.Auth.Dtos.Register;
 using WorkFound.Application.Auth.Dtos.UserProfileDtos;
 using WorkFound.Application.Jobs.Dto;
 using WorkFound.Domain.Entities.Auth;
+using WorkFound.Domain.Entities.Common;
 using WorkFound.Domain.Entities.Jobs;
 using WorkFound.Domain.Entities.Profile.User;
 using WorkFound.Domain.Entities.Profile.Company;
@@ -65,12 +66,11 @@ public static class Mapping
         };
     }
 
-    public static UserSkill ToUserSkill(this UserSkillDto dto, Guid userProfileId)
+    public static Skill ToUserSkill(this UserSkillDto dto, Guid userProfileId)
     {
-        return new UserSkill()
+        return new Skill()
         {
-            SkillName = dto.SkillName,
-            UserProfileId = userProfileId,
+            Name = dto.SkillName,
         };
     }
     
@@ -87,17 +87,17 @@ public static class Mapping
         };
     }
         
-    public static Job ToJob(this AddJobDto dto, Guid companyId)
+    public static JobPost ToJobPost(this AddJobPostDto postDto, Guid companyId)
     {
-        return new Job()
+        return new JobPost()
         {
-            Title = dto.Title,
-            Description = dto.Description,
+            Title = postDto.Title,
+            Description = postDto.Description,
             CompanyId = companyId,
-            Location = dto.Location,
-            LocationType = dto.LocationType,
-            IsOpen = dto.IsOpen,
-            IsPublic = dto.IsPublic,
+            Location = postDto.Location,
+            LocationType = postDto.LocationType,
+            IsOpen = postDto.IsOpen,
+            IsPublic = postDto.IsPublic,
         };
     }
 }

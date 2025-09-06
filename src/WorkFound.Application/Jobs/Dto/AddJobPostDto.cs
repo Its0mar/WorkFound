@@ -3,11 +3,12 @@ using WorkFound.Domain.Entities.Enums;
 
 namespace WorkFound.Application.Jobs.Dto;
 
-public record AddJobDto
+public record AddJobPostDto
 {
     [MinLength(3, ErrorMessage = "Title must be at least 3 characters long.")]
     [MaxLength(30, ErrorMessage = "Title cannot exceed 30 characters.")]
     public required string Title { get; init; }
+    
     
     [MinLength(10, ErrorMessage = "Description must be at least 10 characters long.")]
     [MaxLength(1000, ErrorMessage = "Description cannot exceed 1000 characters.")]
