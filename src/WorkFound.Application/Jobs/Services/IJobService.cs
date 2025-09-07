@@ -11,6 +11,7 @@ public interface IJobService
     public Task<bool> UpdateJobAsync(UpdateJobDto dto, Guid jobId, Guid appUserId);
     public Task<bool> AddJobSkillAsync(AddJobSkillDto dto, Guid appUserId);
     public Task<bool> RemoveJobSkillAsync(RemoveJobSkillDto dto, Guid appUserId);
+    public Task<ViewJobPostDto?> GetPublicJobPostByIdAsync(Guid jobId);
 
 
 }

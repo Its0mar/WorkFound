@@ -88,7 +88,14 @@ public class JobsController : ControllerBase
         return Ok("Job skill removed successfully.");
     }
     
-    //update job skill
-    //delete job skill
+    [HttpGet, Authorize, Route("show-job/{jobId:guid}")]
+    public async Task<IActionResult> ShowJob(Guid jobId)
+    {
+        var job = await _jobService.GetPublicJobPostByIdAsync(jobId);
+        if (job is null)
+            return NotFound("Job not found.");
+        return Ok(job);
+    }
+
         
 }

@@ -123,10 +123,9 @@ public class UserService : IUserService
         var skill = userProfile.Skills.FirstOrDefault(s => s.Id == skillId);
         if (skill is null) return false;
         userProfile.Skills.Remove(skill);
-        await _context.SaveChangesAsync();
         
         bool isUsed = await _context.UserProfiles
-            .AnyAsync(up => up.Skills.Any(s => s.Id == skill.Id));
+            .AnyAsync(up => up.Id != userProfileId && up.Skills.Any(s => s.Id == skill.Id));
 
         bool isUsedByJob = await _context.Jobs
             .AnyAsync(jp => jp.Skills.Any(s => s.Id == skill.Id));
@@ -134,7 +133,6 @@ public class UserService : IUserService
         if (!isUsed && !isUsedByJob)
         {
             _context.Skills.Remove(skill);
-            await _context.SaveChangesAsync();
         }
         
         return await _context.SaveChangesAsync() > 0 ;

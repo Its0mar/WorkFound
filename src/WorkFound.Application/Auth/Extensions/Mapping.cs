@@ -100,4 +100,22 @@ public static class Mapping
             IsPublic = postDto.IsPublic,
         };
     }
+
+    public static ViewJobPostDto ToViewJobPostDto(this JobPost jobPost)
+    {
+        return new ViewJobPostDto()
+        {
+            Id = jobPost.Id,
+            Title = jobPost.Title,
+            Description = jobPost.Description,
+            LocationType = jobPost.LocationType.ToString(),
+            Location = jobPost.Location,
+            IsOpen = jobPost.IsOpen,
+            IsPublic = jobPost.IsPublic,
+            CreatedAt = jobPost.CreatedAt,
+            CompanyName = jobPost.CompanyProfile?.Name ?? string.Empty,
+            CompanyLogoUrl = jobPost.CompanyProfile?.LogoUrl,
+            Skills = jobPost.Skills.Select(s => s.Name).ToList(),
+        };
+    }
 }

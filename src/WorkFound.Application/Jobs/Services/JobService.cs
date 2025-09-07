@@ -139,7 +139,7 @@ public class JobService : IJobService
         job.Skills.Remove(skill);
         
         bool isUsedByUser = await _context.UserProfiles.AnyAsync(u => u.Skills.Any(s => s.Id == dto.SkillId));
-        bool isUsedByJobPost = await _context.Jobs.AnyAsync(u => u.Skills.Any(s => s.Id == dto.SkillId));
+        bool isUsedByJobPost = await _context.Jobs.AnyAsync(u => u.Id != dto.JobId && u.Skills.Any(s => s.Id == dto.SkillId));
 
         if (!isUsedByUser && !isUsedByJobPost)
         {
@@ -149,6 +149,17 @@ public class JobService : IJobService
         return await _context.SaveChangesAsync() > 0;
     }
     
+    public async Task<ViewJobPostDto?> GetPublicJobPostByIdAsync(Guid jobId)
+    {
+        var job = await _context.Jobs
+            .Include(j => j.CompanyProfile)
+            .Include(j => j.Skills)
+            .FirstOrDefaultAsync(j => j.Id == jobId && j.IsPublic);
+        if (job is null) return null;
+        
+        var jobDto = job.ToViewJobPostDto();
+        return jobDto;
+    }
     
     private bool GetCompanyProfileId(Guid appUserId, out Guid companyProfileId)
     {
