@@ -57,6 +57,8 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlite("Data Source=workfound.db");
+    options.LogTo(Console.WriteLine, LogLevel.Information);
+    options.EnableSensitiveDataLogging();
 });
 
 builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(opt =>

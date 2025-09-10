@@ -289,13 +289,106 @@ namespace WorkFound.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Skills");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Forms.JobApplicationForm", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DisabledAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("JobId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobId");
+
+                    b.ToTable("JobApplicationForms");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Questions.JobApplicationQuestion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsRequired")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("JobApplicationFormId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("QuestionType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobApplicationFormId");
+
+                    b.ToTable("JobApplicationQuestions");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Questions.JobApplicationQuestionOption", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("JobApplicationQuestionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobApplicationQuestionId");
+
+                    b.ToTable("JobApplicationQuestionOptions");
                 });
 
             modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.JobPost", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("ActiveFormId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("CompanyId")
@@ -326,6 +419,8 @@ namespace WorkFound.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ActiveFormId");
 
                     b.HasIndex("CompanyId");
 
@@ -585,13 +680,53 @@ namespace WorkFound.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Forms.JobApplicationForm", b =>
+                {
+                    b.HasOne("WorkFound.Domain.Entities.Jobs.JobPost", "Job")
+                        .WithMany("ApplicationForms")
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Job");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Questions.JobApplicationQuestion", b =>
+                {
+                    b.HasOne("WorkFound.Domain.Entities.Jobs.Application.Forms.JobApplicationForm", "JobApplicationForm")
+                        .WithMany("Questions")
+                        .HasForeignKey("JobApplicationFormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("JobApplicationForm");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Questions.JobApplicationQuestionOption", b =>
+                {
+                    b.HasOne("WorkFound.Domain.Entities.Jobs.Application.Questions.JobApplicationQuestion", "JobApplicationQuestion")
+                        .WithMany("Options")
+                        .HasForeignKey("JobApplicationQuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("JobApplicationQuestion");
+                });
+
             modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.JobPost", b =>
                 {
+                    b.HasOne("WorkFound.Domain.Entities.Jobs.Application.Forms.JobApplicationForm", "ActiveForm")
+                        .WithMany()
+                        .HasForeignKey("ActiveFormId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("WorkFound.Domain.Entities.Profile.Company.CompanyProfile", "CompanyProfile")
                         .WithMany("Jobs")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ActiveForm");
 
                     b.Navigation("CompanyProfile");
                 });
@@ -664,6 +799,21 @@ namespace WorkFound.Infrastructure.Migrations
                     b.Navigation("CompanyProfile");
 
                     b.Navigation("UserProfile");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Forms.JobApplicationForm", b =>
+                {
+                    b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Questions.JobApplicationQuestion", b =>
+                {
+                    b.Navigation("Options");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.JobPost", b =>
+                {
+                    b.Navigation("ApplicationForms");
                 });
 
             modelBuilder.Entity("WorkFound.Domain.Entities.Profile.Company.CompanyProfile", b =>

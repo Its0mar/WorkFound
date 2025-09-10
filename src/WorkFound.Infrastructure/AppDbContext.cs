@@ -2,11 +2,14 @@ using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.DependencyInjection;
 using WorkFound.Application.Common.Interface;
 using WorkFound.Domain.Entities.Auth;
 using WorkFound.Domain.Entities.Common;
 using WorkFound.Domain.Entities.Jobs;
+using WorkFound.Domain.Entities.Jobs.Application.Forms;
+using WorkFound.Domain.Entities.Jobs.Application.Questions;
 using WorkFound.Domain.Entities.Profile.Admin;
 using WorkFound.Domain.Entities.Profile.Company;
 using WorkFound.Domain.Entities.Profile.User;
@@ -21,7 +24,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<CompanyProfile> CompanyProfiles => Set<CompanyProfile>();
     public DbSet<JobPost> Jobs => Set<JobPost>();
     public DbSet<Skill> Skills => Set<Skill>();
-
+    public DbSet<JobApplicationForm> JobApplicationForms => Set<JobApplicationForm>();
+    public DbSet<JobApplicationQuestion> JobApplicationQuestions => Set<JobApplicationQuestion>();
+    public DbSet<JobApplicationQuestionOption> JobApplicationQuestionOptions => Set<JobApplicationQuestionOption>();
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -79,6 +85,30 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .HasMany(cp => cp.Jobs)
             .WithOne(j => j.CompanyProfile)
             .HasForeignKey(j => j.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<JobPost>()
+            .HasMany(jp => jp.ApplicationForms)
+            .WithOne(app => app.Job)
+            .HasForeignKey(app => app.JobId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        builder.Entity<JobPost>()
+            .HasOne(jp => jp.ActiveForm)
+            .WithMany()
+            .HasForeignKey(jp => jp.ActiveFormId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        builder.Entity<JobApplicationForm>()
+            .HasMany(app => app.Questions)
+            .WithOne(q => q.JobApplicationForm)
+            .HasForeignKey(q => q.JobApplicationFormId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Entity<JobApplicationQuestion>()
+            .HasMany(q => q.Options)
+            .WithOne(o => o.JobApplicationQuestion)
+            .HasForeignKey(o => o.JobApplicationQuestionId)
             .OnDelete(DeleteBehavior.Cascade);
         
         //to remove the length warning

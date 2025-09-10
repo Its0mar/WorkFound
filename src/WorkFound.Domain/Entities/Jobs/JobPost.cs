@@ -1,5 +1,6 @@
 using WorkFound.Domain.Entities.Common;
 using WorkFound.Domain.Entities.Enums;
+using WorkFound.Domain.Entities.Jobs.Application.Forms;
 using WorkFound.Domain.Entities.Profile.Company;
 
 namespace WorkFound.Domain.Entities.Jobs;
@@ -14,11 +15,17 @@ public class JobPost
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public bool IsOpen { get; set; } = true;
     public bool IsPublic { get; set; } = true;
-    
     public Guid CompanyId { get; set; }
     public CompanyProfile? CompanyProfile { get; set; }
     
     public List<Skill> Skills { get; set; } = new();
+    
+    public Guid? ActiveFormId { get; set; }
+    public JobApplicationForm? ActiveForm { get; set; }
+    
+    public List<JobApplicationForm> ApplicationForms { get; set; } = new();
+    
+    public bool IsApplicable  => IsOpen && IsPublic && ActiveFormId != null;
     
 }
 

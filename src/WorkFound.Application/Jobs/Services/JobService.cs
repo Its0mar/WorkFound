@@ -2,8 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using WorkFound.Application.Auth.Extensions;
 using WorkFound.Application.Common.Interface;
 using WorkFound.Application.Jobs.Dto;
+using WorkFound.Application.Jobs.Dto.Application.Apply;
 using WorkFound.Application.Validation;
 using WorkFound.Domain.Entities.Common;
+using WorkFound.Domain.Entities.Jobs.Application.Forms;
+using WorkFound.Domain.Entities.Jobs.Application.Questions;
+using QuestionType = WorkFound.Domain.Entities.Enums.QuestionType;
 
 namespace WorkFound.Application.Jobs.Services;
 
@@ -160,6 +164,52 @@ public class JobService : IJobService
         var jobDto = job.ToViewJobPostDto();
         return jobDto;
     }
+
+    public async Task<bool> CreateJobApplicationFormAsync(CreateJobApplicationFormDto dto, Guid appUserId)
+    {
+        if (!GetCompanyProfileId(appUserId, out var companyProfileId))
+            return false;
+        
+        var job = await _context.Jobs.Include(j => j.ApplicationForms).FirstOrDefaultAsync(j => j.Id == dto.JobId && j.CompanyId == companyProfileId);
+        if (job is null) return false;
+        
+        var form = new JobApplicationForm()
+        {
+            Id = Guid.NewGuid(),
+            Title = dto.Title,
+            Description = dto.Description,
+            Version = job.ApplicationForms.Count + 1,
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true,
+            JobId = job.Id,
+            Questions = dto.Questions.Select(qDto => new JobApplicationQuestion
+            {
+                Id = Guid.NewGuid(),
+                Text = qDto.Text,
+                Order = qDto.Order,
+                IsRequired = qDto.IsRequired,
+                QuestionType = (QuestionType)qDto.QuestionTypeDto,
+                Options = qDto.Options?.Select((opt, index) => new JobApplicationQuestionOption
+                {
+                    Id = Guid.NewGuid(),
+                    Text = opt,
+                    Order = index + 1
+                }).ToList() ?? null
+            }).ToList()
+        };
+        
+        await _context.JobApplicationForms.AddAsync(form);
+        job.ActiveFormId = form.Id;
+        await _context.JobApplicationForms.Where(f => f.JobId == job.Id && f.Id != form.Id && f.IsActive)
+            .ExecuteUpdateAsync(setter => setter
+                .SetProperty(f => f.IsActive, false)
+                .SetProperty(f => f.DisabledAt, DateTime.UtcNow));
+        
+        return await _context.SaveChangesAsync() > 0;
+        
+       
+    }
+    
     
     private bool GetCompanyProfileId(Guid appUserId, out Guid companyProfileId)
     {

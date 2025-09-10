@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkFound.Application.Auth.Extensions;
 using WorkFound.Application.Jobs.Dto;
+using WorkFound.Application.Jobs.Dto.Application.Apply;
 using WorkFound.Application.Jobs.Services;
 
 namespace WorkFound.API.Controllers;
@@ -95,6 +96,16 @@ public class JobsController : ControllerBase
         if (job is null)
             return NotFound("Job not found.");
         return Ok(job);
+    }
+    
+    [HttpPost, Authorize(Roles = "Company"), Route("create-job-app/{jobId:guid}")]
+    
+    public async Task<IActionResult> CreateJobApplicationForm([FromBody] CreateJobApplicationFormDto dto)
+    {
+        if (!await _jobService.CreateJobApplicationFormAsync(dto, User.GetUserId()))
+            return BadRequest("Failed to create job application form.");
+                
+        return Ok("Job application form created successfully!");
     }
 
         
