@@ -15,6 +15,6 @@ public class JobApplicationQuestion
     public required bool IsRequired { get; set; }
     
     public QuestionType QuestionType { get; set; }
-    public List<JobApplicationQuestionOption>? Options { get; set; } 
+    public List<JobApplicationQuestionOption> Options { get; set; } = new();
 }
 

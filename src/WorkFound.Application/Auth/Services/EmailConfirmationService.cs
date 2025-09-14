@@ -15,15 +15,15 @@ public class EmailConfirmationService : IEmailConfirmationService
         _userManager = userManager;
     }
     
-    public async Task SendConfirmationEmailAsync(AppUser user, string origin, string action)
+    public async Task SendConfirmationEmailAsync(AppUser appUser, string origin, string action)
     {
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var confirmationLink = $"{origin}/api/auth/{action}?userId={user.Id}&token={Uri.EscapeDataString(token)}";
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
+        var confirmationLink = $"{origin}/api/auth/{action}?userId={appUser.Id}&token={Uri.EscapeDataString(token)}";
         
         var subject = "Confirm your email";
         var body = $"Please confirm your email by clicking this link: <a href='{confirmationLink}'>Confirm Email</a>";
         
-        await _mailService.SendEmailAsync(user.Email!, subject, body);
+        await _mailService.SendEmailAsync(appUser.Email!, subject, body);
     }
 
     public async Task<bool> ConfirmEmailAsync(Guid userId, string token)

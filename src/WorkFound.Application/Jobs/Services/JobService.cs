@@ -182,6 +182,9 @@ public class JobService : IJobService
             CreatedAt = DateTime.UtcNow,
             IsActive = true,
             JobId = job.Id,
+            CoverLetterPrompt = dto.CoverLetterPrompt,
+            ResumePrompt = dto.ResumePrompt,
+            ThankYouMessage = dto.ThankYouMessage,
             Questions = dto.Questions.Select(qDto => new JobApplicationQuestion
             {
                 Id = Guid.NewGuid(),

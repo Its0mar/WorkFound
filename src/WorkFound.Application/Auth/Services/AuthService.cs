@@ -160,32 +160,32 @@ public class AuthService : IAuthService
     
     #region Utility Methods
     // a method to create a user and assign a role
-    private async Task<AuthResult> InitializeUser(AppUser user,string password ,string role)
+    private async Task<AuthResult> InitializeUser(AppUser appUser,string password ,string role)
     {
-        bool duplicatePhone = await _userManager.Users.AnyAsync(u => u.PhoneNumber == user.PhoneNumber);
+        bool duplicatePhone = await _userManager.Users.AnyAsync(u => u.PhoneNumber == appUser.PhoneNumber);
         
         if (duplicatePhone)
             return AuthResult.Fail("Phone number already exists");
-        user.RefreshToken = string.Empty; // to pass the no null constraint
-        var result = await _userManager.CreateAsync(user, password);
+        appUser.RefreshToken = string.Empty; // to pass the no null constraint
+        var result = await _userManager.CreateAsync(appUser, password);
         if (!result.Succeeded)
             return AuthResult.Fail(result.Errors.Select(e => e.Description));
         
-        result = await _userManager.AddToRoleAsync(user, role);
+        result = await _userManager.AddToRoleAsync(appUser, role);
         if (!result.Succeeded)
             return AuthResult.Fail(result.Errors.Select(e => e.Description));
         
-        return await CreateAuthResultAsync(user, role);
+        return await CreateAuthResultAsync(appUser, role);
     }
     
-    private async Task<AuthResult> CreateAuthResultAsync(AppUser user, string role)
+    private async Task<AuthResult> CreateAuthResultAsync(AppUser appUser, string role)
     {
         var (refreshToken, expiryTime) = GenerateRefreshToken();
-        user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = expiryTime;
-        await _userManager.UpdateAsync(user);
+        appUser.RefreshToken = refreshToken;
+        appUser.RefreshTokenExpiryTime = expiryTime;
+        await _userManager.UpdateAsync(appUser);
         
-        return AuthResult.Success(user.Id, _jwtTokenGenerator.GenerateToken(user), refreshToken, expiryTime, role);
+        return AuthResult.Success(appUser.Id, _jwtTokenGenerator.GenerateToken(appUser), refreshToken, expiryTime, role);
     }
     
     private (string token, DateTime ExpireOn) GenerateRefreshToken()

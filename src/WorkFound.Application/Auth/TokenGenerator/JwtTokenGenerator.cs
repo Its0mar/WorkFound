@@ -12,23 +12,23 @@ public class JwtTokenGenerator(IOptions<JwtSettings> jwtSettings) : IJwtTokenGen
 {
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
-    public string GenerateToken(AppUser user)
+    public string GenerateToken(AppUser appUser)
     {
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Sub, appUser.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Iat,
                 new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString(),
                 ClaimValueTypes.Integer64),
-            new Claim(ClaimTypes.Role, user.AccountType.ToString())
+            new Claim(ClaimTypes.Role, appUser.AccountType.ToString())
         };
 
-        if (!string.IsNullOrWhiteSpace(user.Email))
-            claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
+        if (!string.IsNullOrWhiteSpace(appUser.Email))
+            claims.Add(new Claim(JwtRegisteredClaimNames.Email, appUser.Email));
 
-        if (!string.IsNullOrWhiteSpace(user.UserName))
-            claims.Add(new Claim(ClaimTypes.Name, user.UserName));
+        if (!string.IsNullOrWhiteSpace(appUser.UserName))
+            claims.Add(new Claim(ClaimTypes.Name, appUser.UserName));
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

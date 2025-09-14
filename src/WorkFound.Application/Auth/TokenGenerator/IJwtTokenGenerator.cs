@@ -4,5 +4,5 @@ namespace WorkFound.Application.Auth.TokenGenerator;
 
 public interface IJwtTokenGenerator
 {
-    string GenerateToken(AppUser user);
+    string GenerateToken(AppUser appUser);
 }

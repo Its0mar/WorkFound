@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WorkFound.Application.Auth.Extensions;
 using WorkFound.Application.Jobs.Dto;
 using WorkFound.Application.Jobs.Dto.Application.Apply;
+using WorkFound.Application.Jobs.Dto.Application.Submit;
 using WorkFound.Application.Jobs.Services;
 
 namespace WorkFound.API.Controllers;
@@ -13,10 +14,12 @@ namespace WorkFound.API.Controllers;
 public class JobsController : ControllerBase
 {
     private readonly IJobService _jobService;
+    private readonly ISubmitJobAppService _submitJobAppService;
 
-    public JobsController(IJobService jobService)
+    public JobsController(IJobService jobService, ISubmitJobAppService submitJobAppService)
     {
         _jobService = jobService;
+        _submitJobAppService = submitJobAppService;
     }
     
     [HttpGet]
@@ -106,6 +109,16 @@ public class JobsController : ControllerBase
             return BadRequest("Failed to create job application form.");
                 
         return Ok("Job application form created successfully!");
+    }
+    
+    [HttpPost, Authorize(Roles = "User"), Route("submit-job-app/{jobId:guid}")]
+    public async Task<IActionResult> SubmitJobApplicationForm(Guid jobId, [FromBody] AppSubmitDto dto)
+    {
+        var userId = User.GetUserId();
+        if (!await _submitJobAppService.SubmitJobApplicationAsync(userId, jobId, dto))
+            return BadRequest("Failed to submit job application.");
+                
+        return Ok("Job application submitted successfully!");
     }
 
         

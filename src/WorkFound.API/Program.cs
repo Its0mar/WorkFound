@@ -152,6 +152,7 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<ISubmitJobAppService, SubmitJobAppService>();
 
 var app = builder.Build();
 

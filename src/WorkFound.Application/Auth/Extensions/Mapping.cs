@@ -24,12 +24,12 @@ public static class Mapping
         };
     }
 
-    public static CompanyProfile ToCompnyProfile(this CompanyRegisterDto dto, AppUser user)
+    public static CompanyProfile ToCompnyProfile(this CompanyRegisterDto dto, AppUser appUser)
     {
         return new CompanyProfile()
         {
             // AppUser = user,
-            AppUserId = user.Id,
+            AppUserId = appUser.Id,
             Name = dto.CompanyName,
             Description = dto.Description,
             Website = dto.Website,
@@ -39,12 +39,12 @@ public static class Mapping
         };
     }
     
-    public static UserProfile ToUserProfile(this UserRegisterDto dto, AppUser user)
+    public static Domain.Entities.Profile.User.UserProfile ToUserProfile(this UserRegisterDto dto, AppUser appUser)
     {
-        return new UserProfile()
+        return new Domain.Entities.Profile.User.UserProfile()
         {
             // AppUser = user,
-            AppUserId = user.Id,
+            AppUserId = appUser.Id,
             FirstName = dto.FirstName,
             LastName = dto.LastName,
             Location = dto.Location,

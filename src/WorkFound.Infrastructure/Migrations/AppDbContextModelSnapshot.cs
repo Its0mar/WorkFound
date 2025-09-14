@@ -295,10 +295,88 @@ namespace WorkFound.Infrastructure.Migrations
                     b.ToTable("Skills");
                 });
 
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Answers.JobAppSubmitAnswer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AnswerText")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("JobAppSubmitFormId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("JobApplicationQuestionId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobAppSubmitFormId");
+
+                    b.HasIndex("JobApplicationQuestionId");
+
+                    b.ToTable("JobAppSubmitAnswers");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Answers.JobAppSubmitAnswerOption", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("AnswerId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("OptionId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnswerId");
+
+                    b.HasIndex("OptionId");
+
+                    b.ToTable("JobAppSubmitAnswerOptions");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Forms.JobAppSubmitForm", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CoverLetter")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("JobApplicationId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ResumeUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("SubmittedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserProfileId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobApplicationId");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("JobAppSubmitForms");
+                });
+
             modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Forms.JobApplicationForm", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CoverLetterPrompt")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
@@ -307,13 +385,19 @@ namespace WorkFound.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DisabledAt")
+                    b.Property<DateTime?>("DisabledAt")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
                     b.Property<Guid>("JobId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ResumePrompt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ThankYouMessage")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
@@ -680,6 +764,63 @@ namespace WorkFound.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Answers.JobAppSubmitAnswer", b =>
+                {
+                    b.HasOne("WorkFound.Domain.Entities.Jobs.Application.Forms.JobAppSubmitForm", "JobAppSubmitForm")
+                        .WithMany("Answers")
+                        .HasForeignKey("JobAppSubmitFormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WorkFound.Domain.Entities.Jobs.Application.Questions.JobApplicationQuestion", "JobApplicationQuestion")
+                        .WithMany()
+                        .HasForeignKey("JobApplicationQuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("JobAppSubmitForm");
+
+                    b.Navigation("JobApplicationQuestion");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Answers.JobAppSubmitAnswerOption", b =>
+                {
+                    b.HasOne("WorkFound.Domain.Entities.Jobs.Application.Answers.JobAppSubmitAnswer", "Answer")
+                        .WithMany("SelectedOptions")
+                        .HasForeignKey("AnswerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WorkFound.Domain.Entities.Jobs.Application.Questions.JobApplicationQuestionOption", "Option")
+                        .WithMany()
+                        .HasForeignKey("OptionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Answer");
+
+                    b.Navigation("Option");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Forms.JobAppSubmitForm", b =>
+                {
+                    b.HasOne("WorkFound.Domain.Entities.Jobs.Application.Forms.JobApplicationForm", "JobApplication")
+                        .WithMany("Submissions")
+                        .HasForeignKey("JobApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WorkFound.Domain.Entities.Profile.User.UserProfile", "UserProfile")
+                        .WithMany("JobAppSubmitForms")
+                        .HasForeignKey("UserProfileId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("JobApplication");
+
+                    b.Navigation("UserProfile");
+                });
+
             modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Forms.JobApplicationForm", b =>
                 {
                     b.HasOne("WorkFound.Domain.Entities.Jobs.JobPost", "Job")
@@ -801,9 +942,21 @@ namespace WorkFound.Infrastructure.Migrations
                     b.Navigation("UserProfile");
                 });
 
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Answers.JobAppSubmitAnswer", b =>
+                {
+                    b.Navigation("SelectedOptions");
+                });
+
+            modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Forms.JobAppSubmitForm", b =>
+                {
+                    b.Navigation("Answers");
+                });
+
             modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Forms.JobApplicationForm", b =>
                 {
                     b.Navigation("Questions");
+
+                    b.Navigation("Submissions");
                 });
 
             modelBuilder.Entity("WorkFound.Domain.Entities.Jobs.Application.Questions.JobApplicationQuestion", b =>
@@ -823,6 +976,8 @@ namespace WorkFound.Infrastructure.Migrations
 
             modelBuilder.Entity("WorkFound.Domain.Entities.Profile.User.UserProfile", b =>
                 {
+                    b.Navigation("JobAppSubmitForms");
+
                     b.Navigation("UserEducations");
 
                     b.Navigation("UserExperiences");

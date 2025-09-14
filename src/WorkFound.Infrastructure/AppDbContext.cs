@@ -1,13 +1,11 @@
-using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.DependencyInjection;
 using WorkFound.Application.Common.Interface;
 using WorkFound.Domain.Entities.Auth;
 using WorkFound.Domain.Entities.Common;
 using WorkFound.Domain.Entities.Jobs;
+using WorkFound.Domain.Entities.Jobs.Application.Answers;
 using WorkFound.Domain.Entities.Jobs.Application.Forms;
 using WorkFound.Domain.Entities.Jobs.Application.Questions;
 using WorkFound.Domain.Entities.Profile.Admin;
@@ -27,6 +25,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<JobApplicationForm> JobApplicationForms => Set<JobApplicationForm>();
     public DbSet<JobApplicationQuestion> JobApplicationQuestions => Set<JobApplicationQuestion>();
     public DbSet<JobApplicationQuestionOption> JobApplicationQuestionOptions => Set<JobApplicationQuestionOption>();
+    public DbSet<JobAppSubmitForm> JobAppSubmitForms => Set<JobAppSubmitForm>();
+    public DbSet<JobAppSubmitAnswer> JobAppSubmitAnswers => Set<JobAppSubmitAnswer>();
+    public DbSet<JobAppSubmitAnswerOption> JobAppSubmitAnswerOptions => Set<JobAppSubmitAnswerOption>();
     
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -35,7 +36,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
         builder.Entity<AppUser>()
             .HasOne(x => x.UserProfile)
             .WithOne(x => x.AppUser)
-            .HasForeignKey<UserProfile>(x => x.AppUserId)
+            .HasForeignKey<Domain.Entities.Profile.User.UserProfile>(x => x.AppUserId)
             .OnDelete(DeleteBehavior.Restrict);
         
         builder.Entity<AppUser>()
@@ -64,18 +65,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .WithMany(s => s.JobPosts)
             .UsingEntity(j => j.ToTable("JobPostSkills"));
         
-        builder.Entity<UserProfile>()
+        builder.Entity<Domain.Entities.Profile.User.UserProfile>()
             .HasMany(up => up.Skills)
             .WithMany(us => us.UserProfiles)
             .UsingEntity(j => j.ToTable("UserProfileSkills"));        
         
-        builder.Entity<UserProfile>()
+        builder.Entity<Domain.Entities.Profile.User.UserProfile>()
             .HasMany(up => up.UserExperiences)
             .WithOne(ue => ue.UserProfile)
             .HasForeignKey(ue => ue.UserProfileId)
             .OnDelete(DeleteBehavior.Cascade);
         
-        builder.Entity<UserProfile>()
+        builder.Entity<Domain.Entities.Profile.User.UserProfile>()
             .HasMany(up => up.UserEducations)
             .WithOne(ue => ue.UserProfile)
             .HasForeignKey(ue => ue.UserProfileId)
@@ -99,6 +100,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .HasForeignKey(jp => jp.ActiveFormId)
             .OnDelete(DeleteBehavior.Restrict);
         
+        
         builder.Entity<JobApplicationForm>()
             .HasMany(app => app.Questions)
             .WithOne(q => q.JobApplicationForm)
@@ -111,6 +113,36 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .HasForeignKey(o => o.JobApplicationQuestionId)
             .OnDelete(DeleteBehavior.Cascade);
         
+        builder.Entity<JobApplicationForm>()
+            .HasMany(app => app.Submissions)
+            .WithOne(s => s.JobApplication)
+            .HasForeignKey(s => s.JobApplicationId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Entity<JobAppSubmitForm>()
+            .HasOne(j => j.UserProfile)
+            .WithMany(up => up.JobAppSubmitForms)
+            .HasForeignKey(j => j.UserProfileId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        builder.Entity<JobAppSubmitForm>()
+            .HasMany(s => s.Answers)
+            .WithOne(a => a.JobAppSubmitForm)
+            .HasForeignKey(a => a.JobAppSubmitFormId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Entity<JobAppSubmitAnswer>()
+            .HasMany(a => a.SelectedOptions)
+            .WithOne(so => so.Answer)
+            .HasForeignKey(so => so.AnswerId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Entity<JobAppSubmitAnswerOption>()
+            .HasOne(so => so.Option)
+            .WithMany()
+            .HasForeignKey(so => so.OptionId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
         //to remove the length warning
         // builder.Entity<AppUser>(entiy =>
         // {
@@ -119,7 +151,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
         // });
         
         // to remove the length warning
-        builder.Entity<UserProfile>(entity =>
+        builder.Entity<Domain.Entities.Profile.User.UserProfile>(entity =>
         {
             entity.Property(p => p.FirstName)
                 .HasMaxLength(30)
