@@ -1,3 +1,4 @@
+using WorkFound.Application.Auth.Dto.UserProfileDtos;
 using WorkFound.Application.Auth.Dtos.UserProfileDtos;
 
 namespace WorkFound.Application.User.Services;

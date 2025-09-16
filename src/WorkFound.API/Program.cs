@@ -5,7 +5,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using WorkFound.Application.ApplicationForm.Interfaces;
+using WorkFound.Application.AppSubmission.Interfaces;
+using WorkFound.Application.AppSubmission.Services;
 using WorkFound.Application.Auth;
+using WorkFound.Application.Auth.Interfaces;
 using WorkFound.Application.Auth.Services;
 using WorkFound.Application.Auth.TokenGenerator;
 using WorkFound.Application.Common.Interface;
@@ -14,6 +18,7 @@ using WorkFound.Infrastructure;
 using WorkFound.Application.Common.Services;
 using WorkFound.Application.Common.Settings;
 using WorkFound.Application.Files;
+using WorkFound.Application.Jobs.Interfaces;
 using WorkFound.Application.Jobs.Services;
 using WorkFound.Application.User.Services;
 using WorkFound.Infrastructure.Services;
@@ -144,15 +149,21 @@ builder.Services.AddAuthorization(opt =>
 
 
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAppDbContext, AppDbContext>();
 builder.Services.AddScoped<IMailService, MailKitMailService>();
 builder.Services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IJobService, JobService>();
+builder.Services.AddScoped<IJobManagementService, JobManagementService>();
+builder.Services.AddScoped<IJobSkillManagementService, JobSkillManagementService>();
+builder.Services.AddScoped<IJobApplicationFormService, IJobApplicationFormService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ISubmitJobAppService, SubmitJobAppService>();
+builder.Services.AddScoped<IUserRegistrationService, UserRegistrationService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<ITokenManagementService, TokenManagementService>();
+builder.Services.AddScoped<IPasswordManagementService, PasswordManagementService>();
+builder.Services.AddScoped<IEmailManagementService, EmailManagementService>();
 
 var app = builder.Build();
 

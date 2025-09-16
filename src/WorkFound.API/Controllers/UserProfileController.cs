@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WorkFound.Application.Auth.Dto.UserProfileDtos;
 using WorkFound.Application.Auth.Dtos.UserProfileDtos;
 using WorkFound.Application.Auth.Extensions;
 using WorkFound.Application.User.Services;

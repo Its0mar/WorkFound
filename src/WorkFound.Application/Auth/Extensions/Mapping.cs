@@ -1,4 +1,5 @@
-using WorkFound.Application.Auth.Dtos.Register;
+using WorkFound.Application.Auth.Dto.Register;
+using WorkFound.Application.Auth.Dto.UserProfileDtos;
 using WorkFound.Application.Auth.Dtos.UserProfileDtos;
 using WorkFound.Application.Jobs.Dto;
 using WorkFound.Domain.Entities.Auth;

@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkFound.Application.Auth.Dtos;
-using WorkFound.Application.Auth.Dtos.Password;
-using WorkFound.Application.Auth.Dtos.Register;
 using WorkFound.Application.Auth.Extensions;
+using WorkFound.Application.Auth.Interfaces;
 using WorkFound.Application.Auth.Services;
 using WorkFound.Application.Common.Interface;
 using WorkFound.Application.Common.Result;
@@ -14,14 +13,19 @@ namespace WorkFound.API.Controllers;
 [Route("api/[controller]/[action]")]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthService _authService;
     private readonly IEmailConfirmationService _emailConfirmationService;
     private readonly ICurrentUserService _currentUserService;
-    public AuthController(IAuthService authService, IEmailConfirmationService emailConfirmationService, ICurrentUserService currentUserService)
+    private readonly ITokenManagementService _tokenManagementService;
+    private readonly IUserRegistrationService _userRegistrationService;
+    private readonly IAuthenticationService _authenticationService;
+    private readonly IPasswordManagementService _passwordManagementService;
+    public AuthController( IEmailConfirmationService emailConfirmationService, ICurrentUserService currentUserService, IUserRegistrationService userRegistrationService, ITokenManagementService tokenManagementService, IAuthenticationService authenticationService, IPasswordManagementService passwordManagementService)
     {
-        _authService = authService;
         _emailConfirmationService = emailConfirmationService;
         _currentUserService = currentUserService;
+        _userRegistrationService = userRegistrationService;
+        _authenticationService = authenticationService;
+        _passwordManagementService = passwordManagementService;
     }
     
     
@@ -31,103 +35,103 @@ public class AuthController : ControllerBase
         return Ok("AuthController is working!");
     }
     
-    [HttpPost, Authorize(policy:"RequireAnonymous")]
-    public async Task<IActionResult> CompanyRegister([FromForm]CompanyRegisterDto dto)
-    {
-        var result = await _authService.CompanyRegisterAsync(dto);
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
+    // [HttpPost, Authorize(policy:"RequireAnonymous")]
+    // public async Task<IActionResult> CompanyRegister([FromForm]CompanyRegisterDto dto)
+    // {
+    //     var result = await _userRegistrationService.CompanyRegisterAsync(dto);
+    //     if (!result.Succeeded)
+    //         return BadRequest(result.Errors);
+    //
+    //     return Ok(result);
+    // }
+    //
+    // [HttpPost, Authorize(policy:"RequireAnonymous")]
+    // public async Task<ActionResult<AuthResult>> UserRegister([FromForm]UserRegisterDto dto)
+    // {
+    //     var result = await _userRegistrationService.UserRegisterAsync(dto);
+    //     if (!result.Succeeded)
+    //         return BadRequest(result.Errors);
+    //     
+    //     return result;
+    // }
 
-        return Ok(result);
-    }
+    // [HttpPost, Authorize(policy:"RequireAnonymous")]
+    // public async Task<ActionResult<AuthResult>> Login([FromForm] LoginDto dto)
+    // {
+    //     var result = await _authenticationService.LoginAsync(dto);
+    //     if (!result.Succeeded)
+    //         return BadRequest(result.Errors);
+    //     
+    //     return result;
+    // }
+
+    // [HttpGet]
+    // public async Task<ActionResult> RequestEmailConfirmation()
+    // {
+    //     var user = await _currentUserService.GetCurrentUserAsync();
+    //     if (user is null) return Unauthorized("User not found!");
+    //
+    //     await _emailConfirmationService.SendConfirmationEmailAsync(user, $"{Request.Scheme}://{Request.Host}", nameof(ConfirmEmail));
+    //     return Ok("Confirmation email sent successfully!");
+    // }
     
-    [HttpPost, Authorize(policy:"RequireAnonymous")]
-    public async Task<ActionResult<AuthResult>> UserRegister([FromForm]UserRegisterDto dto)
-    {
-        var result = await _authService.UserRegisterAsync(dto);
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
-        
-        return result;
-    }
+    // [HttpPost]
+    // public async Task<ActionResult<AuthResult>> ConfirmEmail([FromQuery]string userId ,string token)
+    // {
+    //     var result = await _authService.ConfirmEmailAsync(token, Guid.Parse(userId));
+    //     
+    //     if (!result.Succeeded) return BadRequest(result.Errors);
+    //
+    //     return Ok(result);
+    // }
+    //
+    // [Authorize]
+    // [HttpPatch]
+    // public async Task<ActionResult<AuthResult>> ChangePassword([FromForm] ChangePasswordDto dto)
+    // {
+    //     var result = await _passwordManagementService.ChangePasswordAsync(dto, User.GetUserId());
+    //     if (!result.Succeeded) return BadRequest(result.Errors);
+    //     
+    //     return result;
+    // }
+    //
+    // [HttpPost]
+    // public async Task<ActionResult> ResetPasswordRequest([FromBody] string email)
+    // {
+    //     var resetLink = $"{Request.Scheme}://{Request.Host}/api/auth/{nameof(ResetPassword)}";
+    //     await _authService.SendResetPasswordEmailAsync(email, resetLink);
+    //     
+    //     return Ok("If an account with this email exists, a reset password link has been sent to it.");
+    // }
+    //
+    // [HttpPost]
+    // public async Task<ActionResult<AuthResult>> ResetPassword([FromForm] ResetPasswordDto dto, [FromQuery] string token,
+    //     string email)
+    // {
+    //     var result = await _passwordManagementService.ResetPasswordAsync(dto, email, token);
+    //     if (!result.Succeeded) return BadRequest(result.Errors);
+    //     
+    //     return result;
+    // }
 
-    [HttpPost, Authorize(policy:"RequireAnonymous")]
-    public async Task<ActionResult<AuthResult>> Login([FromForm] LoginDto dto)
-    {
-        var result = await _authService.LoginAsync(dto);
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
-        
-        return result;
-    }
-
-    [HttpGet]
-    public async Task<ActionResult> RequestEmailConfirmation()
-    {
-        var user = await _currentUserService.GetCurrentUserAsync();
-        if (user is null) return Unauthorized("User not found!");
-
-        await _emailConfirmationService.SendConfirmationEmailAsync(user, $"{Request.Scheme}://{Request.Host}", nameof(ConfirmEmail));
-        return Ok("Confirmation email sent successfully!");
-    }
-    
-    [HttpPost]
-    public async Task<ActionResult<AuthResult>> ConfirmEmail([FromQuery]string userId ,string token)
-    {
-        var result = await _authService.ConfirmEmailAsync(token, Guid.Parse(userId));
-        
-        if (!result.Succeeded) return BadRequest(result.Errors);
-
-        return Ok(result);
-    }
-    
-    [Authorize]
-    [HttpPatch]
-    public async Task<ActionResult<AuthResult>> ChangePassword([FromForm] ChangePasswordDto dto)
-    {
-        var result = await _authService.ChangePasswordAsync(dto, User.GetUserId());
-        if (!result.Succeeded) return BadRequest(result.Errors);
-        
-        return result;
-    }
-
-    [HttpPost]
-    public async Task<ActionResult> ResetPasswordRequest([FromBody] string email)
-    {
-        var resetLink = $"{Request.Scheme}://{Request.Host}/api/auth/{nameof(ResetPassword)}";
-        await _authService.SendResetPasswordEmailAsync(email, resetLink);
-        
-        return Ok("If an account with this email exists, a reset password link has been sent to it.");
-    }
-
-    [HttpPost]
-    public async Task<ActionResult<AuthResult>> ResetPassword([FromForm] ResetPasswordDto dto, [FromQuery] string token,
-        string email)
-    {
-        var result = await _authService.ResetPasswordAsync(dto, email, token);
-        if (!result.Succeeded) return BadRequest(result.Errors);
-        
-        return result;
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
-    {
-        var result = await _authService.RefreshTokenAsync(refreshToken);
-        if (!result.Succeeded) return BadRequest(result.Errors);
-        //nullable type , but they cant be null in this case, if modified in the future, check for null
-        SetRefreshTokenInCookie(result.RefreshToken!, result.RefreshTokenExpireOn!.Value);
-
-        return Ok(result);
-    }
-    
-    [HttpPost]
-    public async Task<IActionResult> RevokeToken(string token) {
-        var result = await _authService.RevokeTokenAsync(token);
-        if(!result) return BadRequest("Token is invalid!");
-
-        return Ok();
-    }
+    // [HttpPost]
+    // public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
+    // {
+    //     var result = await _authService.RefreshTokenAsync(refreshToken);
+    //     if (!result.Succeeded) return BadRequest(result.Errors);
+    //     //nullable type , but they cant be null in this case, if modified in the future, check for null
+    //     SetRefreshTokenInCookie(result.RefreshToken!, result.RefreshTokenExpireOn!.Value);
+    //
+    //     return Ok(result);
+    // }
+    //
+    // [HttpPost]
+    // public async Task<IActionResult> RevokeToken(string token) {
+    //     var result = await _authService.RevokeTokenAsync(token);
+    //     if(!result) return BadRequest("Token is invalid!");
+    //
+    //     return Ok();
+    // }
 
     #region Utitlity Methods
 

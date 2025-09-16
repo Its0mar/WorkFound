@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
+using WorkFound.Application.Auth.Interfaces;
 using WorkFound.Application.Common.Interface;
+using WorkFound.Application.Common.Result;
 using WorkFound.Domain.Entities.Auth;
 
 namespace WorkFound.Application.Auth.Services;
@@ -15,26 +17,17 @@ public class EmailConfirmationService : IEmailConfirmationService
         _userManager = userManager;
     }
     
-    public async Task SendConfirmationEmailAsync(AppUser appUser, string origin, string action)
-    {
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
-        var confirmationLink = $"{origin}/api/auth/{action}?userId={appUser.Id}&token={Uri.EscapeDataString(token)}";
-        
-        var subject = "Confirm your email";
-        var body = $"Please confirm your email by clicking this link: <a href='{confirmationLink}'>Confirm Email</a>";
-        
-        await _mailService.SendEmailAsync(appUser.Email!, subject, body);
-    }
-
-    public async Task<bool> ConfirmEmailAsync(Guid userId, string token)
+    public async Task<AuthResult> ConfirmEmailAsync(Guid userId, string token)
     {
         var user = await _userManager.FindByIdAsync(userId.ToString());
-        if (user is null)
-            return false;
+        
+        if (user is null) return AuthResult.Fail("User not found");
         
         var result = await _userManager.ConfirmEmailAsync(user, token);
-        
-        return result.Succeeded;
+        if (!result.Succeeded)
+            return AuthResult.Fail(result.Errors.Select(e => e.Description));
+
+        return AuthResult.Success(userId,role: user.AccountType.ToString());
     }
 
 }
