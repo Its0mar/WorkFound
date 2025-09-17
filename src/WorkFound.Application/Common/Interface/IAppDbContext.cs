@@ -13,7 +13,7 @@ namespace WorkFound.Application.Common.Interface;
 public interface IAppDbContext
 {
     DbSet<CompanyProfile> CompanyProfiles { get; }
-    DbSet<UserProfile> UserProfiles { get; }
+    DbSet<Domain.Entities.Profile.User.UserProfile> UserProfiles { get; }
     DbSet<UserExperience> UserExperiences { get; }
     DbSet<UserEducation> UserEducations { get; }
     DbSet<Skill> Skills { get; }

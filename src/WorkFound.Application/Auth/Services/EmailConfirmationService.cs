@@ -1,4 +1,6 @@
+using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using WorkFound.Application.Auth.Interfaces;
 using WorkFound.Application.Common.Interface;
 using WorkFound.Application.Common.Result;
@@ -22,8 +24,11 @@ public class EmailConfirmationService : IEmailConfirmationService
         var user = await _userManager.FindByIdAsync(userId.ToString());
         
         if (user is null) return AuthResult.Fail("User not found");
+     
+        var decodedBytes = WebEncoders.Base64UrlDecode(token);
+        var normalToken = Encoding.UTF8.GetString(decodedBytes);
         
-        var result = await _userManager.ConfirmEmailAsync(user, token);
+        var result = await _userManager.ConfirmEmailAsync(user, normalToken);
         if (!result.Succeeded)
             return AuthResult.Fail(result.Errors.Select(e => e.Description));
 

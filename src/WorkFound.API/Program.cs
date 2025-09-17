@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using WorkFound.Application.ApplicationForm.Interfaces;
+using WorkFound.Application.ApplicationForm.Services;
 using WorkFound.Application.AppSubmission.Interfaces;
 using WorkFound.Application.AppSubmission.Services;
 using WorkFound.Application.Auth;
@@ -20,6 +21,7 @@ using WorkFound.Application.Common.Settings;
 using WorkFound.Application.Files;
 using WorkFound.Application.Jobs.Interfaces;
 using WorkFound.Application.Jobs.Services;
+using WorkFound.Application.User.Interfaces;
 using WorkFound.Application.User.Services;
 using WorkFound.Infrastructure.Services;
 
@@ -153,10 +155,9 @@ builder.Services.AddScoped<IAppDbContext, AppDbContext>();
 builder.Services.AddScoped<IMailService, MailKitMailService>();
 builder.Services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJobManagementService, JobManagementService>();
 builder.Services.AddScoped<IJobSkillManagementService, JobSkillManagementService>();
-builder.Services.AddScoped<IJobApplicationFormService, IJobApplicationFormService>();
+builder.Services.AddScoped<IJobApplicationFormService, JobApplicationFormService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ISubmitJobAppService, SubmitJobAppService>();
 builder.Services.AddScoped<IUserRegistrationService, UserRegistrationService>();
@@ -164,6 +165,10 @@ builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ITokenManagementService, TokenManagementService>();
 builder.Services.AddScoped<IPasswordManagementService, PasswordManagementService>();
 builder.Services.AddScoped<IEmailManagementService, EmailManagementService>();
+builder.Services.AddScoped<IUserProfilePicService, UserProfilePicService>();
+builder.Services.AddScoped<IUserProfileExperService, UserProfileExperService>();
+builder.Services.AddScoped<IUserProfileEduService, UserProfileEduService>();
+builder.Services.AddScoped<IUserProfileSkillService, UserProfileSkillService>();
 
 var app = builder.Build();
 

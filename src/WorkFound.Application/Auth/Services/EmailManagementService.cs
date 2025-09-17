@@ -1,4 +1,6 @@
+using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using WorkFound.Application.Auth.Interfaces;
 using WorkFound.Application.Common.Interface;
 using WorkFound.Application.Common.Result;
@@ -20,7 +22,9 @@ public class EmailManagementService : IEmailManagementService
     public async Task SendConfirmationEmailAsync(AppUser appUser, string origin, string action)
     {
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
-        var confirmationLink = $"{origin}/api/auth/{action}?userId={appUser.Id}&token={Uri.EscapeDataString(token)}";
+        var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+        var confirmationLink = $"{origin}/api/auth/{action}?userId={appUser.Id}&token={encodedToken}";
         
         var subject = "Confirm your email";
         var body = $"Please confirm your email by clicking this link: <a href='{confirmationLink}'>Confirm Email</a>";
